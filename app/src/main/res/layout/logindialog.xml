@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottomsheetdialogbg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/logintitle"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginTop="83dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/email"
+            android:textColor="@color/black"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginTop="40dp"
+            />
+        <EditText
+            android:id="@+id/emailEd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/roundedcornerwithstroke"
+            android:padding="15dp"
+            android:inputType="textEmailAddress"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:textColor="@color/black"
+            android:drawableStart="@drawable/emailicon"
+            android:drawablePadding="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/password"
+            android:textColor="@color/black"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginTop="20dp" />
+        <EditText
+            android:id="@+id/passwordEd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/roundedcornerwithstroke"
+            android:padding="15dp"
+            android:inputType="textPassword"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:textColor="@color/black"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/passwordicon"/>
+
+        <Button
+            android:id="@+id/buttonLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            style="@style/BlackButtonBackground"
+            android:background="@drawable/roundedcornerbackground"
+            android:text="@string/sign_inbutton"
+            android:textAllCaps="false"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp" />
+
+        <Button
+            android:id="@+id/buttonRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/registerbutton"
+            style="@style/TransparentButtonBackground"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:layout_marginBottom="85dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

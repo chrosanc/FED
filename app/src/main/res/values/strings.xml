@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">FED</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title">FED - Fertile Infertile Egg Detector</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="registerbutton">Register</string>
+    <string name="sign_inbutton">Sign In</string>
+    <string name="registertitle">Register.</string>
+    <string name="logintitle">Login.</string>
+    <string name="sign_in_or_register_nto_continue">Sign in or Register \nto continue</string>
+    <string name="welcometofed">Welcome to \nFED</string>
+    <string name="capture_egg">Capture Egg</string>
+    <string name="setting">Setting</string>
+</resources>

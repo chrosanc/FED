@@ -1,0 +1,41 @@
+<!-- res/values-night/styles.xml -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme for night mode. -->
+    <style name="Theme.FED" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color for night mode. -->
+        <item name="colorPrimary">@color/night_primary_color</item>
+        <item name="colorPrimaryVariant">#676767</item>
+        <item name="colorOnPrimary">@color/night_text_color</item>
+        <!-- Secondary brand color for night mode. -->
+        <item name="colorSecondary">@color/night_secondary_color</item>
+        <item name="colorSecondaryVariant">#676767</item>
+        <item name="colorOnSecondary">@color/night_text_color</item>
+        <!-- Status bar color for night mode. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here for night mode. -->
+        <item name="android:textViewStyle">@style/NightRobotoTextViewStyle</item>
+        <item name="buttonStyle">@style/NightRobotoButtonStyle</item>
+    </style>
+
+    <style name="BlackButtonBackground" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/night_black</item>
+    </style>
+
+    <style name="TransparentButtonBackground" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">@drawable/roundedcornerwithstroke</item>
+        <item name="backgroundTint">@color/night_black</item>
+    </style>
+
+    <style name="NightRobotoTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="NightRobotoButtonStyle" parent="android:Widget.Holo.Button">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="NightDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
+    </style>
+</resources>

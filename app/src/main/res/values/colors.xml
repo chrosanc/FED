@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Night mode colors -->
+    <color name="night_primary_color">#263238</color> <!-- Contoh: warna biru tua -->
+    <color name="night_secondary_color">#455A64</color> <!-- Contoh: warna biru tua yang lebih gelap -->
+    <color name="night_text_color">#FFFFFF</color> <!-- Contoh: warna teks putih -->
+    <color name="night_black">#000000</color> <!-- Contoh: warna hitam -->
+</resources>
