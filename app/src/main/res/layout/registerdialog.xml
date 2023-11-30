@@ -15,7 +15,7 @@
             android:text="@string/registertitle"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="@color/md_theme_dark_onPrimary"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
             android:layout_marginTop="83dp"/>
@@ -24,7 +24,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/email"
-            android:textColor="@color/black"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
             android:layout_marginTop="40dp"
@@ -38,7 +37,6 @@
             android:inputType="textEmailAddress"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:textColor="@color/black"
             android:drawableStart="@drawable/emailicon"
             android:drawablePadding="10dp"/>
 
@@ -46,7 +44,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/password"
-            android:textColor="@color/black"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
             android:layout_marginTop="20dp" />
@@ -59,18 +56,17 @@
             android:inputType="textPassword"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:textColor="@color/black"
             android:drawablePadding="10dp"
             android:drawableStart="@drawable/passwordicon"/>
 
-        <Button
+        <bangkit.project.fed.ui.LoadingButton
             android:id="@+id/buttonRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
             style="@style/BlackButtonBackground"
             android:background="@drawable/roundedcornerbackground"
             android:text="@string/registerbutton"
+            android:clickable="true"
             android:textAllCaps="false"
             android:layout_marginTop="40dp"
             android:layout_marginBottom="5dp"
@@ -83,7 +79,7 @@
             android:layout_height="wrap_content"
             android:text="@string/sign_inbutton"
             style="@style/TransparentButtonBackground"
-            android:textColor="@color/black"
+            android:textColor="@color/md_theme_dark_onPrimary"
             android:textAllCaps="false"
             android:layout_marginBottom="85dp"
             android:layout_marginStart="50dp"

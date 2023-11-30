@@ -10,12 +10,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FED"
+        android:theme="@style/Apptheme.Light"
         tools:targetApi="31">
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="true"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
+            android:theme="@style/Apptheme.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,6 +24,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
+            android:theme="@style/Apptheme.Light"
             android:exported="false">
 
         </activity>

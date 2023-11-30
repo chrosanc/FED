@@ -15,6 +15,7 @@ import android.widget.Toast
 import bangkit.project.fed.MainActivity
 import bangkit.project.fed.R
 import bangkit.project.fed.databinding.ActivityLoginBinding
+import bangkit.project.fed.ui.LoadingButton
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
@@ -52,7 +53,7 @@ class LoginActivity : AppCompatActivity() {
             showRegisterDialog()
         }
 
-        val loginButton = dialog.findViewById<Button>(R.id.buttonLogin)
+        val loginButton = dialog.findViewById<LoadingButton>(R.id.buttonLogin)
         loginButton.setOnClickListener {
             val emailEd = dialog.findViewById<EditText>(R.id.emailEd)
             val passwordEd = dialog.findViewById<EditText>(R.id.passwordEd)
@@ -64,6 +65,8 @@ class LoginActivity : AppCompatActivity() {
             } else if (password.isEmpty()) {
                 passwordEd.error = "Password Should Not be Empty"
             } else {
+                loginButton.startLoading()
+                loginButton.isClickable = false
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener {task ->
                         if(task.isSuccessful) {
@@ -74,6 +77,7 @@ class LoginActivity : AppCompatActivity() {
                             finish()
                         } else {
                             Toast.makeText(this, "Login Failed, " + task.exception?.message, Toast.LENGTH_SHORT).show()
+                            loginButton.stopLoading()
                         }
 
                     }
@@ -104,7 +108,8 @@ class LoginActivity : AppCompatActivity() {
             showLoginDialog()
         }
 
-        val registerButton = dialog.findViewById<Button>(R.id.buttonRegister)
+        val registerButton : LoadingButton = dialog.findViewById(R.id.buttonRegister)
+        registerButton.setButtonText(getString(R.string.registerbutton))
         registerButton.setOnClickListener {
             val emailEd = dialog.findViewById<EditText>(R.id.emailEd)
             val passwordEd = dialog.findViewById<EditText>(R.id.passwordEd)
@@ -116,12 +121,14 @@ class LoginActivity : AppCompatActivity() {
             } else if (password.isEmpty()) {
                 passwordEd.error = "Password Should Not be Empty"
             } else {
+                registerButton.startLoading()
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener {task ->
                         if(task.isSuccessful) {
                             Toast.makeText(this,"Regristation Success, please login", Toast.LENGTH_SHORT).show()
                             dialog.dismiss()
                         } else {
+                            registerButton.stopLoading()
                             Toast.makeText(this, "Regristasi Failed, " + task.exception?.message, Toast.LENGTH_SHORT).show()
                         }
 
