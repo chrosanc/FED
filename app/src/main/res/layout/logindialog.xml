@@ -5,7 +5,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bottomsheetdialogbg">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:visibility="invisible"
+        android:layout_centerInParent="true"/>
+
     <LinearLayout
+        android:id="@+id/loginLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -60,10 +68,12 @@
             android:drawablePadding="10dp"
             android:drawableStart="@drawable/passwordicon"/>
 
-        <bangkit.project.fed.ui.LoadingButton
+        <Button
             android:id="@+id/buttonLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/BlackButtonBackground"
+            android:background="@drawable/roundedcornerbackground"
             android:text="@string/sign_inbutton"
             android:textAllCaps="false"
             android:layout_marginTop="40dp"

@@ -4,7 +4,15 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bottomsheetdialogbg">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:visibility="invisible"
+        android:layout_centerInParent="true"/>
+
     <LinearLayout
+        android:id="@+id/registerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -59,7 +67,7 @@
             android:drawablePadding="10dp"
             android:drawableStart="@drawable/passwordicon"/>
 
-        <bangkit.project.fed.ui.LoadingButton
+        <Button
             android:id="@+id/buttonRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

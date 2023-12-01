@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
@@ -15,12 +16,15 @@ import android.widget.Toast
 import bangkit.project.fed.MainActivity
 import bangkit.project.fed.R
 import bangkit.project.fed.databinding.ActivityLoginBinding
-import bangkit.project.fed.ui.LoadingButton
+import bangkit.project.fed.databinding.LogindialogBinding
+import bangkit.project.fed.databinding.RegisterdialogBinding
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding:ActivityLoginBinding
+    private lateinit var registerBinding: RegisterdialogBinding
+    private lateinit var loginBinding: LogindialogBinding
     private lateinit var auth:FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,46 +49,52 @@ class LoginActivity : AppCompatActivity() {
         val dialog = Dialog(this)
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.logindialog)
+        loginBinding = LogindialogBinding.inflate(layoutInflater)
+        dialog.setContentView(loginBinding.root)
 
         //Login Dialog Feature Implementation
-        val registerButton = dialog.findViewById<Button>(R.id.buttonRegister)
-        registerButton.setOnClickListener {
-            showRegisterDialog()
-        }
+        loginBinding.apply {
+            buttonRegister.setOnClickListener {
+                showRegisterDialog()
+            }
 
-        val loginButton = dialog.findViewById<LoadingButton>(R.id.buttonLogin)
-        loginButton.setOnClickListener {
-            val emailEd = dialog.findViewById<EditText>(R.id.emailEd)
-            val passwordEd = dialog.findViewById<EditText>(R.id.passwordEd)
-            val email = emailEd.text.toString().trim()
-            val password = passwordEd.text.toString().trim()
+            buttonLogin.setOnClickListener {
+                val emailEd = loginBinding.emailEd
+                val passwordEd = loginBinding.passwordEd
+                val email = emailEd.text.toString().trim()
+                val password = passwordEd.text.toString().trim()
 
-            if(email.isEmpty()) {
-                emailEd.error = "Email Should Not be Empty"
-            } else if (password.isEmpty()) {
-                passwordEd.error = "Password Should Not be Empty"
-            } else {
-                loginButton.startLoading()
-                loginButton.isClickable = false
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener {task ->
-                        if(task.isSuccessful) {
-                            Toast.makeText(this,"Login Success", Toast.LENGTH_SHORT).show()
-                            dialog.dismiss()
-                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        } else {
-                            Toast.makeText(this, "Login Failed, " + task.exception?.message, Toast.LENGTH_SHORT).show()
-                            loginButton.stopLoading()
+                if(email.isEmpty()) {
+                    emailEd.error = "Email Should Not be Empty"
+                } else if (password.isEmpty()) {
+                    passwordEd.error = "Password Should Not be Empty"
+                } else {
+                    progressBar.visibility = View.VISIBLE
+                    loginLayout.visibility = View.INVISIBLE
+
+                    auth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener {task ->
+                            if(task.isSuccessful) {
+                                Toast.makeText(this@LoginActivity,"Login Success", Toast.LENGTH_SHORT).show()
+                                dialog.dismiss()
+                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            } else {
+                                progressBar.visibility = View.INVISIBLE
+                                loginLayout.visibility = View.VISIBLE
+                                Toast.makeText(this@LoginActivity, "Login Failed, " + task.exception?.message, Toast.LENGTH_SHORT).show()
+                            }
+
                         }
+                }
 
-                    }
+
             }
 
 
         }
+
 
 
 
@@ -100,44 +110,51 @@ class LoginActivity : AppCompatActivity() {
         val dialog = Dialog(this)
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.registerdialog)
+        registerBinding = RegisterdialogBinding.inflate(layoutInflater)
+        dialog.setContentView(registerBinding.root)
 
         //Register Dialog Feature Implementation
-        val loginButton = dialog.findViewById<Button>(R.id.buttonLogin)
-        loginButton.setOnClickListener {
-            showLoginDialog()
-        }
+        registerBinding.apply {
 
-        val registerButton : LoadingButton = dialog.findViewById(R.id.buttonRegister)
-        registerButton.setButtonText(getString(R.string.registerbutton))
-        registerButton.setOnClickListener {
-            val emailEd = dialog.findViewById<EditText>(R.id.emailEd)
-            val passwordEd = dialog.findViewById<EditText>(R.id.passwordEd)
-            val email = emailEd.text.toString().trim()
-            val password = passwordEd.text.toString().trim()
+            buttonLogin.setOnClickListener {
+                showLoginDialog()
+            }
 
-            if(email.isEmpty()) {
-                emailEd.error = "Email Should Not be Empty"
-            } else if (password.isEmpty()) {
-                passwordEd.error = "Password Should Not be Empty"
-            } else {
-                registerButton.startLoading()
-                auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener {task ->
-                        if(task.isSuccessful) {
-                            Toast.makeText(this,"Regristation Success, please login", Toast.LENGTH_SHORT).show()
-                            dialog.dismiss()
-                        } else {
-                            registerButton.stopLoading()
-                            Toast.makeText(this, "Regristasi Failed, " + task.exception?.message, Toast.LENGTH_SHORT).show()
+            buttonRegister.setOnClickListener {
+                val emailEd = dialog.findViewById<EditText>(R.id.emailEd)
+                val passwordEd = dialog.findViewById<EditText>(R.id.passwordEd)
+                val email = emailEd.text.toString().trim()
+                val password = passwordEd.text.toString().trim()
+
+                if(email.isEmpty()) {
+                    emailEd.error = "Email Should Not be Empty"
+                } else if (password.isEmpty()) {
+                    passwordEd.error = "Password Should Not be Empty"
+                } else {
+                    progressBar.visibility = View.VISIBLE
+                    registerLayout.visibility = View.INVISIBLE
+
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener {task ->
+                            if(task.isSuccessful) {
+                                Toast.makeText(this@LoginActivity,"Regristation Success, please login", Toast.LENGTH_SHORT).show()
+                                dialog.dismiss()
+                            } else {
+                                progressBar.visibility = View.INVISIBLE
+                                registerLayout.visibility = View.VISIBLE
+                                Toast.makeText(this@LoginActivity, "Regristasi Failed, " + task.exception?.message, Toast.LENGTH_SHORT).show()
+                            }
+
                         }
+                }
 
-                    }
+
+
             }
 
 
-
         }
+
 
         dialog.show()
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
