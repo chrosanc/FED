@@ -95,6 +95,15 @@
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp" />
 
+        <TextView
+            android:id="@+id/forgetText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/forgot"
+            android:textColor="@color/black"
+            android:layout_marginStart="110dp"
+            android:layout_marginBottom="70dp"/>
+
 
     </LinearLayout>
 

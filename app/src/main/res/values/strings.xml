@@ -19,4 +19,8 @@
     <string name="dateexample">Oct 8, 2023 9:25PM</string>
     <string name="library">Library</string>
     <string name="name">Name</string>
+    <string name="forgottitle">Forgot Password</string>
+    <string name="send_email">We\'ll send you code to your email</string>
+    <string name="send_code">Send Code</string>
+    <string name="forgot">Forgot Password? Reset Now</string>
 </resources>
