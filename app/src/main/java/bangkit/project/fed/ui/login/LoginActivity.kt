@@ -19,13 +19,15 @@ import bangkit.project.fed.databinding.ActivityLoginBinding
 import bangkit.project.fed.databinding.LogindialogBinding
 import bangkit.project.fed.databinding.RegisterdialogBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding:ActivityLoginBinding
+    private lateinit var binding: ActivityLoginBinding
     private lateinit var registerBinding: RegisterdialogBinding
     private lateinit var loginBinding: LogindialogBinding
-    private lateinit var auth:FirebaseAuth
+    private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
 
         binding.buttonRegister.setOnClickListener {
             showRegisterDialog()
@@ -41,8 +44,6 @@ class LoginActivity : AppCompatActivity() {
         binding.buttonLogin.setOnClickListener {
             showLoginDialog()
         }
-
-
     }
 
     private fun showLoginDialog() {
@@ -64,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
                 val email = emailEd.text.toString().trim()
                 val password = passwordEd.text.toString().trim()
 
-                if(email.isEmpty()) {
+                if (email.isEmpty()) {
                     emailEd.error = "Email Should Not be Empty"
                 } else if (password.isEmpty()) {
                     passwordEd.error = "Password Should Not be Empty"
@@ -73,9 +74,13 @@ class LoginActivity : AppCompatActivity() {
                     loginLayout.visibility = View.INVISIBLE
 
                     auth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener {task ->
-                            if(task.isSuccessful) {
-                                Toast.makeText(this@LoginActivity,"Login Success", Toast.LENGTH_SHORT).show()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(
+                                    this@LoginActivity,
+                                    "Login Success",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 dialog.dismiss()
                                 val intent = Intent(this@LoginActivity, MainActivity::class.java)
                                 startActivity(intent)
@@ -83,7 +88,11 @@ class LoginActivity : AppCompatActivity() {
                             } else {
                                 progressBar.visibility = View.INVISIBLE
                                 loginLayout.visibility = View.VISIBLE
-                                Toast.makeText(this@LoginActivity, "Login Failed, " + task.exception?.message, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this@LoginActivity,
+                                    "Login Failed, " + task.exception?.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
 
                         }
@@ -99,7 +108,10 @@ class LoginActivity : AppCompatActivity() {
 
 
         dialog.show()
-        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
         dialog.window?.setGravity(Gravity.BOTTOM)
@@ -121,12 +133,13 @@ class LoginActivity : AppCompatActivity() {
             }
 
             buttonRegister.setOnClickListener {
+                val name = registerBinding.nameEd.text.toString().trim()
                 val emailEd = dialog.findViewById<EditText>(R.id.emailEd)
                 val passwordEd = dialog.findViewById<EditText>(R.id.passwordEd)
                 val email = emailEd.text.toString().trim()
                 val password = passwordEd.text.toString().trim()
 
-                if(email.isEmpty()) {
+                if (email.isEmpty()) {
                     emailEd.error = "Email Should Not be Empty"
                 } else if (password.isEmpty()) {
                     passwordEd.error = "Password Should Not be Empty"
@@ -135,29 +148,44 @@ class LoginActivity : AppCompatActivity() {
                     registerLayout.visibility = View.INVISIBLE
 
                     auth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener {task ->
-                            if(task.isSuccessful) {
-                                Toast.makeText(this@LoginActivity,"Regristation Success, please login", Toast.LENGTH_SHORT).show()
-                                dialog.dismiss()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+
+                                val user = hashMapOf(
+                                    "name" to name
+                                )
+                                firestore.collection("users")
+                                    .document(auth.currentUser!!.uid)
+                                    .set(user)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(
+                                            this@LoginActivity,
+                                            "Regristation Success, please login",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        dialog.dismiss()
+                                    }
+
                             } else {
                                 progressBar.visibility = View.INVISIBLE
                                 registerLayout.visibility = View.VISIBLE
-                                Toast.makeText(this@LoginActivity, "Regristasi Failed, " + task.exception?.message, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this@LoginActivity,
+                                    "Regristasi Failed, " + task.exception?.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-
                         }
                 }
-
-
-
             }
-
-
         }
 
 
         dialog.show()
-        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
         dialog.window?.setGravity(Gravity.BOTTOM)

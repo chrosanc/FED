@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "966240779935",
-    "project_id": "fertileeggdetector",
-    "storage_bucket": "fertileeggdetector.appspot.com"
+    "project_number": "31273420084",
+    "project_id": "avid-lock-405816",
+    "storage_bucket": "avid-lock-405816.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:966240779935:android:0458e3831070e5a677acaa",
+        "mobilesdk_app_id": "1:31273420084:android:600b9aee80caf6f4545161",
         "android_client_info": {
           "package_name": "bangkit.project.fed"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBQ2yMheWtMH-jvbc7OSBjkmooX_9hNGFk"
+          "current_key": "AIzaSyChTv4I5oaxL-wnJl5FqFP5kJVah5XDoxs"
         }
       ],
       "services": {
