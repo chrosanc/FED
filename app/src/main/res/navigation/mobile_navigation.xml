@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="bangkit.project.fed.ui.dashboard.DashboardFragment"
+        android:name="bangkit.project.fed.ui.captureegg.CaptureEggFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_capture" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="bangkit.project.fed.ui.notifications.NotificationsFragment"
+        android:name="bangkit.project.fed.ui.setting.SettingFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_setting" />
 </navigation>

@@ -14,4 +14,5 @@
     <string name="welcometofed">Welcome to \nFED</string>
     <string name="capture_egg">Capture Egg</string>
     <string name="setting">Setting</string>
+    <string name="searchbartext">Search Files</string>
 </resources>
