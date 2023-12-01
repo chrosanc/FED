@@ -14,5 +14,9 @@
     <string name="welcometofed">Welcome to \nFED</string>
     <string name="capture_egg">Capture Egg</string>
     <string name="setting">Setting</string>
-    <string name="searchbartext">Search Files</string>
+    <string name="searchbartext">Search Pictures</string>
+    <string name="recents">Recents</string>
+    <string name="dateexample">Oct 8, 2023 9:25PM</string>
+    <string name="library">Library</string>
+    <string name="name">Name</string>
 </resources>
