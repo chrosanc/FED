@@ -61,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/registerbutton"
-        android:textColor="@color/md_theme_dark_onPrimary"
+        android:textColor="@color/md_theme_dark_background"
         android:background="@drawable/roundedcornerwithstroke"
         style="@style/TransparentButtonBackground"
         android:textAllCaps="false"

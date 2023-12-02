@@ -13,11 +13,19 @@ import android.view.Window
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import bangkit.project.fed.MainActivity
 import bangkit.project.fed.R
+import bangkit.project.fed.data.ViewModelFactory
+import bangkit.project.fed.data.datastore.PreferencesDataStore
+import bangkit.project.fed.data.datastore.dataStore
 import bangkit.project.fed.databinding.ActivityLoginBinding
 import bangkit.project.fed.databinding.LogindialogBinding
 import bangkit.project.fed.databinding.RegisterdialogBinding
+import bangkit.project.fed.ui.setting.SettingViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -34,14 +42,12 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
+
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        if (auth.currentUser != null) {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+        getUserName()
 
         binding.buttonRegister.setOnClickListener {
             showRegisterDialog()
@@ -50,6 +56,26 @@ class LoginActivity : AppCompatActivity() {
         binding.buttonLogin.setOnClickListener {
             showLoginDialog()
         }
+    }
+
+    private fun getUserName() {
+        val pref = PreferencesDataStore.getInstance(application.dataStore)
+        val settingViewModel = ViewModelProvider(this, ViewModelFactory(pref))[SettingViewModel::class.java]
+        settingViewModel.userName.observe(this, Observer { userName ->
+            val username = userName
+
+            if (auth.currentUser != null) {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                Toast.makeText(this,
+                    getString(R.string.welcome_back, username), Toast.LENGTH_SHORT).show()
+                finish()
+            }
+
+        })
+
+
+
     }
 
     private fun showLoginDialog() {
@@ -164,7 +190,8 @@ class LoginActivity : AppCompatActivity() {
                             if (task.isSuccessful) {
 
                                 val user = hashMapOf(
-                                    "name" to name
+                                    "displayName" to name,
+                                    "email" to email
                                 )
                                 firestore.collection("users")
                                     .document(auth.currentUser!!.uid)
