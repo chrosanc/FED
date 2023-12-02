@@ -43,4 +43,5 @@
     <string name="choose_image_source">Choose Image Source</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="failed_to_obtain_image">Failed to Obtain Image</string>
 </resources>
