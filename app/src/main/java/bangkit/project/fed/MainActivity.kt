@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -19,8 +18,6 @@ import bangkit.project.fed.data.ViewModelFactory
 import bangkit.project.fed.data.datastore.PreferencesDataStore
 import bangkit.project.fed.data.datastore.dataStore
 import bangkit.project.fed.databinding.ActivityMainBinding
-import bangkit.project.fed.ui.ImageDisplayFragment
-import bangkit.project.fed.ui.captureegg.CaptureEggFragment
 import bangkit.project.fed.ui.setting.SettingViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -89,11 +86,6 @@ class MainActivity : AppCompatActivity() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result.data
                 val selectedImageUri = data?.data
-                val fragment = ImageDisplayFragment.newInstance(selectedImageUri)
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.navigation_capture, fragment)
-                    .addToBackStack(null)
-                    .commit()
             }
         }
 
