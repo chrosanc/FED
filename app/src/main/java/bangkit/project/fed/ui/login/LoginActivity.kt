@@ -121,12 +121,16 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 loginBinding.progressBar.visibility = View.INVISIBLE
                 loginBinding.loginLayout.visibility = View.VISIBLE
-                Toast.makeText(
-                    this@LoginActivity,
-                    getString(R.string.login_failed),
-                    Toast.LENGTH_SHORT
-                ).show()
             }
+        })
+
+        viewModel.errorMessage.observe(this, Observer { errorMessage ->
+            Toast.makeText(
+                this@LoginActivity,
+                getString(R.string.loginfailed, errorMessage),
+                Toast.LENGTH_SHORT
+            ).show()
+
         })
 
         dialog.show()
@@ -176,12 +180,12 @@ class LoginActivity : AppCompatActivity() {
 
         viewModel.registrationResult.observe(this, Observer { success ->
             if (success) {
-                dialog.dismiss()
                 Toast.makeText(
                     this@LoginActivity,
-                    "Regristation Success, please Login",
-                    Toast.LENGTH_SHORT
+                    "Regristation Success, please check your email address for verification.",
+                    Toast.LENGTH_LONG
                 ).show()
+                dialog.dismiss()
             } else {
                 registerBinding.progressBar.visibility = View.INVISIBLE
                 registerBinding.registerLayout.visibility = View.VISIBLE
@@ -206,6 +210,8 @@ class LoginActivity : AppCompatActivity() {
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.forgotdialog)
+
+
 
         dialog.show()
         dialog.window?.setLayout(

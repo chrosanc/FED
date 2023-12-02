@@ -17,6 +17,9 @@ class LoginViewModel : ViewModel() {
     private val _userName = MutableLiveData<String>()
     val userName : LiveData<String> get() = _userName
 
+    private val _error = MutableLiveData<String>()
+    val errorMessage : LiveData<String> get() = _error
+
     private val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
 
@@ -46,10 +49,21 @@ class LoginViewModel : ViewModel() {
             }
     }
 
-    fun loginUser(email: String, password:String) {
+    fun loginUser(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener{task ->
-                _loginResult.value = task.isSuccessful
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    if (user != null && user.isEmailVerified) {
+                        _loginResult.value = true
+                    } else {
+                        _loginResult.value = false
+                        _error.value = "Please verify your email before logging in."
+                    }
+                } else {
+                    _loginResult.value = false
+                    _error.value = task.exception?.message
+                }
             }
     }
 
@@ -57,20 +71,23 @@ class LoginViewModel : ViewModel() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if(task.isSuccessful) {
-                    val user = hashMapOf(
-                        "displayName" to name,
-                        "email" to email
-                    )
-                    firestore.collection("users")
-                        .document(auth.currentUser!!.uid)
-                        .set(user)
-                        .addOnSuccessListener {
-                            _regristationResult.value = true
-                        }
+                    val userAuth = auth.currentUser
+                    userAuth?.sendEmailVerification()?.addOnSuccessListener {
+                        val user = hashMapOf(
+                            "displayName" to name,
+                            "email" to email
+                        )
+                        firestore.collection("users")
+                            .document(auth.currentUser!!.uid)
+                            .set(user)
+                            .addOnSuccessListener {
+                                _regristationResult.value = true
+                            }
+                    }
+
                 } else {
                     _regristationResult.value = false
                 }
             }
     }
-
 }
