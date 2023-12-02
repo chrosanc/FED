@@ -1,12 +1,10 @@
-package bangkit.project.fed.ui.captureegg.ImageDisplay
+package bangkit.project.fed.ui.captureegg.imagedisplay
 
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import bangkit.project.fed.R
 import bangkit.project.fed.databinding.ActivityImageDisplayBinding
-import com.bumptech.glide.Glide
 
 class ImageDisplayActivity : AppCompatActivity() {
 
@@ -16,6 +14,10 @@ class ImageDisplayActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityImageDisplayBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.back.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         showImage()
 

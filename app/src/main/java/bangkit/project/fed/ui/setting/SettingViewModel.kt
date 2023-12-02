@@ -39,7 +39,7 @@ class SettingViewModel(private val pref : PreferencesDataStore) : ViewModel() {
                     .get()
                     .addOnSuccessListener {documentSnapshot ->
                         if(documentSnapshot.exists()) {
-                            userName.value = documentSnapshot.getString("name")
+                            userName.value = documentSnapshot.getString("displayName")
                             userEmail.value = auth.currentUser?.email
                         }
 

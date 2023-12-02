@@ -45,4 +45,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="failed_to_obtain_image">Failed to Obtain Image</string>
     <string name="set_image_name">Set Image Name</string>
+    <string name="login_success">Login Success</string>
+    <string name="login_failed">Login Failed</string>
 </resources>

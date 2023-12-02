@@ -34,7 +34,7 @@
         </provider>
 
         <activity
-            android:name=".ui.captureegg.ImageDisplay.ImageDisplayActivity"
+            android:name=".ui.captureegg.imagedisplay.ImageDisplayActivity"
             android:exported="false" />
         <activity
             android:name=".ui.login.LoginActivity"

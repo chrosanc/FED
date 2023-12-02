@@ -35,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var registerBinding: RegisterdialogBinding
     private lateinit var loginBinding: LogindialogBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var viewModel: LoginViewModel
     private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,10 +45,19 @@ class LoginActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
 
+        viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        getUserName()
+        viewModel.userName.observe(this, Observer {userName ->
+            if(auth.currentUser!= null) {
+                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                startActivity(intent)
+                Toast.makeText(this@LoginActivity, getString(R.string.welcome_back, userName), Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        })
 
         binding.buttonRegister.setOnClickListener {
             showRegisterDialog()
@@ -58,25 +68,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun getUserName() {
-        val pref = PreferencesDataStore.getInstance(application.dataStore)
-        val settingViewModel = ViewModelProvider(this, ViewModelFactory(pref))[SettingViewModel::class.java]
-        settingViewModel.userName.observe(this, Observer { userName ->
-            val username = userName
-
-            if (auth.currentUser != null) {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                Toast.makeText(this,
-                    getString(R.string.welcome_back, username), Toast.LENGTH_SHORT).show()
-                finish()
-            }
-
-        })
-
-
-
-    }
 
     private fun showLoginDialog() {
         val dialog = Dialog(this)
@@ -87,7 +78,7 @@ class LoginActivity : AppCompatActivity() {
 
 
         val textForgot = dialog.findViewById<TextView>(R.id.forgetText)
-        textForgot.setOnClickListener{
+        textForgot.setOnClickListener {
             showForgotPWDialog()
         }
 
@@ -111,39 +102,32 @@ class LoginActivity : AppCompatActivity() {
                     progressBar.visibility = View.VISIBLE
                     loginLayout.visibility = View.INVISIBLE
 
-                    auth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                Toast.makeText(
-                                    this@LoginActivity,
-                                    "Login Success",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                dialog.dismiss()
-                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            } else {
-                                progressBar.visibility = View.INVISIBLE
-                                loginLayout.visibility = View.VISIBLE
-                                Toast.makeText(
-                                    this@LoginActivity,
-                                    "Login Failed, " + task.exception?.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-
-                        }
+                    viewModel.loginUser(email, password)
                 }
-
-
             }
-
-
         }
 
-
-
+        viewModel.loginResult.observe(this, Observer { success ->
+            if (success) {
+                Toast.makeText(
+                    this@LoginActivity,
+                    getString(R.string.login_success),
+                    Toast.LENGTH_SHORT
+                ).show()
+                dialog.dismiss()
+                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                loginBinding.progressBar.visibility = View.INVISIBLE
+                loginBinding.loginLayout.visibility = View.VISIBLE
+                Toast.makeText(
+                    this@LoginActivity,
+                    getString(R.string.login_failed),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
 
         dialog.show()
         dialog.window?.setLayout(
@@ -185,39 +169,25 @@ class LoginActivity : AppCompatActivity() {
                     progressBar.visibility = View.VISIBLE
                     registerLayout.visibility = View.INVISIBLE
 
-                    auth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-
-                                val user = hashMapOf(
-                                    "displayName" to name,
-                                    "email" to email
-                                )
-                                firestore.collection("users")
-                                    .document(auth.currentUser!!.uid)
-                                    .set(user)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(
-                                            this@LoginActivity,
-                                            "Regristation Success, please login",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        dialog.dismiss()
-                                    }
-
-                            } else {
-                                progressBar.visibility = View.INVISIBLE
-                                registerLayout.visibility = View.VISIBLE
-                                Toast.makeText(
-                                    this@LoginActivity,
-                                    "Regristasi Failed, " + task.exception?.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
+                    viewModel.registerUser(name, email, password)
                 }
             }
         }
+
+        viewModel.registrationResult.observe(this, Observer { success ->
+            if (success) {
+                dialog.dismiss()
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Regristation Success, please Login",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                registerBinding.progressBar.visibility = View.INVISIBLE
+                registerBinding.registerLayout.visibility = View.VISIBLE
+                Toast.makeText(this@LoginActivity, "Regristation Failed", Toast.LENGTH_SHORT).show()
+            }
+        })
 
 
         dialog.show()
@@ -238,7 +208,10 @@ class LoginActivity : AppCompatActivity() {
         dialog.setContentView(R.layout.forgotdialog)
 
         dialog.show()
-        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
         dialog.window?.setGravity(Gravity.BOTTOM)
