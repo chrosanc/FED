@@ -7,12 +7,12 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_capture"
         android:icon="@drawable/cameraicon"
         android:title="@string/capture_egg" />
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_setting"
         android:icon="@drawable/settingicon"
         android:title="@string/setting" />
 
