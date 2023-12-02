@@ -37,6 +37,12 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
+        if (auth.currentUser != null) {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
         binding.buttonRegister.setOnClickListener {
             showRegisterDialog()
         }
@@ -140,8 +146,8 @@ class LoginActivity : AppCompatActivity() {
 
             buttonRegister.setOnClickListener {
                 val name = registerBinding.nameEd.text.toString().trim()
-                val emailEd = dialog.findViewById<EditText>(R.id.emailEd)
-                val passwordEd = dialog.findViewById<EditText>(R.id.passwordEd)
+                val emailEd = registerBinding.emailEd
+                val passwordEd = registerBinding.passwordEd
                 val email = emailEd.text.toString().trim()
                 val password = passwordEd.text.toString().trim()
 

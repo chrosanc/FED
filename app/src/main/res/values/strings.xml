@@ -23,4 +23,20 @@
     <string name="send_email">We\'ll send you code to your email</string>
     <string name="send_code">Send Code</string>
     <string name="forgot">Forgot Password? Reset Now</string>
+    <string name="appereances">Appereances</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="darkmode_desc">Turn On Dark Mode</string>
+    <string name="notifications">Notifications</string>
+    <string name="notifications_desc">Configure Notifications</string>
+    <string name="languages">Languages</string>
+    <string name="language_desc">Change Language</string>
+    <string name="about">About</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="privacypolicy_desc">Application Privacy Policy</string>
+    <string name="logout">Logout</string>
+    <string name="account">Account</string>
+    <string name="profile">Configure Display Profile</string>
+    <string name="profile_desc">Change Profile Picture, Name</string>
+    <string name="configure_account">Configure Account</string>
+    <string name="account_desc">Change Email and Password</string>
 </resources>
