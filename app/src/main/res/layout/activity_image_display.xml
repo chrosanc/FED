@@ -7,9 +7,36 @@
     tools:context=".ui.captureegg.ImageDisplay.ImageDisplayActivity">
 
     <ImageView
+        android:id="@+id/back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/backicon"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:translationZ="12dp"
+        app:tint="@color/seed" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:textAlignment="center"
+        android:translationZ="12dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/seed"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/set_image_name" />
+
+    <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="@color/md_theme_dark_background"/>
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,6 +68,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="25dp"
         app:cardElevation="10dp"
+        app:cardBackgroundColor="@color/md_theme_light_primary"
         android:layout_marginEnd="20dp">
 
         <ImageView
@@ -48,7 +76,7 @@
             android:layout_height="match_parent"
             android:padding="12dp"
             android:src="@drawable/uploadicon"
-            app:tint="@color/md_theme_light_primary" />
+            app:tint="@color/seed" />
 
     </androidx.cardview.widget.CardView>
 
