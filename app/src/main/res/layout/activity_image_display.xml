@@ -18,6 +18,18 @@
         android:translationZ="12dp"
         app:tint="@color/seed" />
 
+    <ImageView
+        android:id="@+id/rotateButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:translationZ="12dp"
+        android:src="@drawable/rotateicon"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        app:tint="@color/seed"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
