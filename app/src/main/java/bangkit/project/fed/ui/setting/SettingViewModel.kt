@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import bangkit.project.fed.data.datastore.PreferencesDataStore
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SettingViewModel(private val pref : PreferencesDataStore) : ViewModel() {
@@ -29,6 +30,16 @@ class SettingViewModel(private val pref : PreferencesDataStore) : ViewModel() {
     fun saveThemeSetting(isDarkModeActive: Boolean) {
         viewModelScope.launch {
             pref.saveThemeSetting(isDarkModeActive)
+        }
+    }
+
+    fun getLocale(): LiveData<String> {
+        return pref.getLocaleSetting().asLiveData(Dispatchers.IO)
+    }
+
+    fun saveLocale(localeName: String) {
+        viewModelScope.launch {
+            pref.saveLocaleSetting(localeName)
         }
     }
 

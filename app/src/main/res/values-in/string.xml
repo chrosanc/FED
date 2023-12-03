@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">FED</string>
+    <string name="title_home">Beranda</string>
+    <string name="title_dashboard">Dasbor</string>
+    <string name="title_notifications">Notifikasi</string>
+    <string name="title">FED - Fertile Infertile Egg Detector</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="registerbutton">Daftar</string>
+    <string name="sign_inbutton">Masuk</string>
+    <string name="registertitle">Daftar.</string>
+    <string name="logintitle">Masuk.</string>
+    <string name="sign_in_or_register_nto_continue">Masuk atau daftar untuk \nmelanjutkan</string>
+    <string name="welcometofed">Selamat datang di \nFED</string>
+    <string name="capture_egg">Foto Telur</string>
+    <string name="setting">Pengaturan</string>
+    <string name="searchbartext">Cari Gambar</string>
+    <string name="recents">Terbaru</string>
+    <string name="dateexample">Okt 8, 2023 9:25PM</string>
+    <string name="library">Library</string>
+    <string name="name">Nama</string>
+    <string name="forgottitle">Lupa Kata Sandi</string>
+    <string name="send_email">Kami akan mengirimkan kode ke email Anda</string>
+    <string name="send_code">Kirim kode</string>
+    <string name="forgot">Lupa Kata Sandi? Atur Ulang Sekarang</string>
+    <string name="appereances">Tampilan</string>
+    <string name="dark_mode">Mode Gelap</string>
+    <string name="darkmode_desc">Nyalakan Mode Gelap</string>
+    <string name="notifications">Notifikasi</string>
+    <string name="notifications_desc">Mengonfigurasi Notifikasi</string>
+    <string name="languages">Bahasa</string>
+    <string name="language_desc">Ubah Bahasa</string>
+    <string name="about">Tentang</string>
+    <string name="privacy_policy">Kebijakan Privasi</string>
+    <string name="privacypolicy_desc">Kebijakan Privasi Aplikasi</string>
+    <string name="logout">Keluar</string>
+    <string name="account">Akun</string>
+    <string name="profile">Mengonfigurasi Tampilan Profil </string>
+    <string name="profile_desc">Mengubah Gambar Profil, Nama</string>
+    <string name="configure_account">Konfigurasi Akun</string>
+    <string name="account_desc">Ubah Email dan Kata Sandi</string>
+    <string name="welcome_back">Selamat datang kembali, %1$s</string>
+    <string name="choose_image_source">Pilih Sumber Gambar</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="failed_to_obtain_image">Gagal Mendapatkan Gambar</string>
+    <string name="set_image_name">Mengatur Nama Gambar</string>
+    <string name="login_success">Masuk berhasil</string>
+    <string name="loginfailed">Masuk gagal, %1$s</string>
+    <string-array name="language_array">
+        <item>English</item>
+        <item>Indonesia</item>
+    </string-array>
+    <string name="language">Language</string>
+</resources>

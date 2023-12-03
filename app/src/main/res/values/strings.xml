@@ -41,10 +41,14 @@
     <string name="account_desc">Change Email and Password</string>
     <string name="welcome_back">Welcome Back, %1$s</string>
     <string name="choose_image_source">Choose Image Source</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="failed_to_obtain_image">Failed to Obtain Image</string>
     <string name="set_image_name">Set Image Name</string>
     <string name="login_success">Login Success</string>
     <string name="loginfailed">Login Failed, %1$s</string>
+    <string-array name="language_array">
+        <item>English</item>
+        <item>Indonesia</item>
+    </string-array>
+    <string name="language">Language</string>
 </resources>

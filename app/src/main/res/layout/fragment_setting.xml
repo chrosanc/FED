@@ -66,6 +66,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="30dp"
+                    android:paddingBottom="8dp"
                     android:paddingEnd="30dp"
                     android:text="@string/appereances"
                     android:textSize="16sp" />
@@ -103,6 +104,7 @@
 
 
                         </LinearLayout>
+
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -190,7 +192,25 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/language_desc"
                                 android:textSize="12sp" />
+
+
                         </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="1dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="50dp"
+                            android:layout_height="50dp"
+                            android:background="#AFAFAF" />
+
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/sp_language"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_gravity="end|center"
+                            android:entries="@array/language_array" />
+
+
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -198,6 +218,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="30dp"
+                    android:paddingBottom="8dp"
                     android:paddingEnd="30dp"
                     android:text="@string/account"
                     android:textSize="16sp" />
@@ -273,12 +294,10 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-
-
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingBottom="8dp"
                     android:paddingStart="30dp"
                     android:paddingEnd="30dp"
                     android:text="@string/about"
