@@ -1,11 +1,14 @@
 package bangkit.project.fed.ui.login
 
 import android.app.Dialog
+import android.app.LocaleManager
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.LocaleList
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +17,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
-import androidx.lifecycle.Observer
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModelProvider
 import bangkit.project.fed.MainActivity
 import bangkit.project.fed.R
+import bangkit.project.fed.data.ViewModelFactory
+import bangkit.project.fed.data.datastore.PreferencesDataStore
+import bangkit.project.fed.data.datastore.dataStore
 import bangkit.project.fed.databinding.ActivityLoginBinding
 import bangkit.project.fed.databinding.LogindialogBinding
 import bangkit.project.fed.databinding.RegisterdialogBinding
+import bangkit.project.fed.ui.setting.SettingViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -32,6 +39,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var viewModel: LoginViewModel
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var settingViewModel: SettingViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +50,11 @@ class LoginActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
 
         viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+
+
+        val pref = PreferencesDataStore.getInstance(this.applicationContext.dataStore)
+        settingViewModel =
+            ViewModelProvider(this, ViewModelFactory(pref))[SettingViewModel::class.java]
 
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
@@ -64,6 +78,10 @@ class LoginActivity : AppCompatActivity() {
 
         binding.buttonLogin.setOnClickListener {
             showLoginDialog()
+        }
+
+        settingViewModel.getLocale().observe(this) {
+            setLocale(it)
         }
     }
 
@@ -221,5 +239,18 @@ class LoginActivity : AppCompatActivity() {
         dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
         dialog.window?.setGravity(Gravity.BOTTOM)
 
+    }
+
+    private fun setLocale( localeCode: String) {
+        val context = this@LoginActivity
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.getSystemService(LOCALE_SERVICE).let { localeManager ->
+                if (localeManager is LocaleManager) {
+                    localeManager.applicationLocales = LocaleList.forLanguageTags(localeCode)
+                }
+            }
+        } else {
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeCode))
+        }
     }
 }

@@ -1,20 +1,22 @@
 package bangkit.project.fed
 
 import android.Manifest
+import android.app.LocaleManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.LocaleList
 import android.provider.MediaStore
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -24,8 +26,10 @@ import bangkit.project.fed.data.ViewModelFactory
 import bangkit.project.fed.data.datastore.PreferencesDataStore
 import bangkit.project.fed.data.datastore.dataStore
 import bangkit.project.fed.databinding.ActivityMainBinding
+import bangkit.project.fed.databinding.FragmentSettingBinding
 import bangkit.project.fed.ui.captureegg.imagedisplay.ImageDisplayActivity
 import bangkit.project.fed.ui.setting.SettingViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -211,9 +215,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
-
         }
-
     }
 
     companion object {

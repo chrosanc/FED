@@ -124,6 +124,7 @@ class SettingFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
     }
 
     private fun setLocale(localeCode: String, viewModel: SettingViewModel) {

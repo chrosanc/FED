@@ -23,7 +23,7 @@
     <string name="send_email">We\'ll send you code to your email</string>
     <string name="send_code">Send Code</string>
     <string name="forgot">Forgot Password? Reset Now</string>
-    <string name="appereances">Appereances</string>
+    <string name="appereances">Appearances</string>
     <string name="dark_mode">Dark Mode</string>
     <string name="darkmode_desc">Turn On Dark Mode</string>
     <string name="notifications">Notifications</string>
@@ -48,7 +48,7 @@
     <string name="loginfailed">Login Failed, %1$s</string>
     <string-array name="language_array">
         <item>English</item>
-        <item>Indonesia</item>
+        <item>Bahasa Indonesia</item>
     </string-array>
     <string name="language">Language</string>
 </resources>

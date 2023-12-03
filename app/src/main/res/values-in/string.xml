@@ -35,7 +35,7 @@
     <string name="privacypolicy_desc">Kebijakan Privasi Aplikasi</string>
     <string name="logout">Keluar</string>
     <string name="account">Akun</string>
-    <string name="profile">Mengonfigurasi Tampilan Profil </string>
+    <string name="profile">Mengkonfigurasi Tampilan Profil </string>
     <string name="profile_desc">Mengubah Gambar Profil, Nama</string>
     <string name="configure_account">Konfigurasi Akun</string>
     <string name="account_desc">Ubah Email dan Kata Sandi</string>
@@ -48,7 +48,7 @@
     <string name="loginfailed">Masuk gagal, %1$s</string>
     <string-array name="language_array">
         <item>English</item>
-        <item>Indonesia</item>
+        <item>Bahasa Indonesia</item>
     </string-array>
     <string name="language">Language</string>
 </resources>
