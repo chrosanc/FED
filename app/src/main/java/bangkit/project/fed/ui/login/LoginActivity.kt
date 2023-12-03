@@ -14,7 +14,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import bangkit.project.fed.MainActivity
 import bangkit.project.fed.R
@@ -58,6 +57,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+
         binding.buttonRegister.setOnClickListener {
             showRegisterDialog()
         }
@@ -66,7 +66,6 @@ class LoginActivity : AppCompatActivity() {
             showLoginDialog()
         }
     }
-
 
     private fun showLoginDialog() {
         val dialog = Dialog(this)
