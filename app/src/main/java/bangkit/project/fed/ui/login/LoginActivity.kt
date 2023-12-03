@@ -10,7 +10,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
@@ -19,13 +18,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import bangkit.project.fed.MainActivity
 import bangkit.project.fed.R
-import bangkit.project.fed.data.ViewModelFactory
-import bangkit.project.fed.data.datastore.PreferencesDataStore
-import bangkit.project.fed.data.datastore.dataStore
 import bangkit.project.fed.databinding.ActivityLoginBinding
 import bangkit.project.fed.databinding.LogindialogBinding
 import bangkit.project.fed.databinding.RegisterdialogBinding
-import bangkit.project.fed.ui.setting.SettingViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -50,14 +45,18 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        viewModel.userName.observe(this, Observer {userName ->
-            if(auth.currentUser!= null) {
+        viewModel.userName.observe(this) { userName ->
+            if (auth.currentUser != null) {
                 val intent = Intent(this@LoginActivity, MainActivity::class.java)
                 startActivity(intent)
-                Toast.makeText(this@LoginActivity, getString(R.string.welcome_back, userName), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@LoginActivity,
+                    getString(R.string.welcome_back, userName),
+                    Toast.LENGTH_SHORT
+                ).show()
                 finish()
             }
-        })
+        }
 
         binding.buttonRegister.setOnClickListener {
             showRegisterDialog()
@@ -107,7 +106,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.loginResult.observe(this, Observer { success ->
+        viewModel.loginResult.observe(this) { success ->
             if (success) {
                 Toast.makeText(
                     this@LoginActivity,
@@ -122,16 +121,16 @@ class LoginActivity : AppCompatActivity() {
                 loginBinding.progressBar.visibility = View.INVISIBLE
                 loginBinding.loginLayout.visibility = View.VISIBLE
             }
-        })
+        }
 
-        viewModel.errorMessage.observe(this, Observer { errorMessage ->
+        viewModel.errorMessage.observe(this) { errorMessage ->
             Toast.makeText(
                 this@LoginActivity,
                 getString(R.string.loginfailed, errorMessage),
                 Toast.LENGTH_SHORT
             ).show()
 
-        })
+        }
 
         dialog.show()
         dialog.window?.setLayout(
@@ -178,7 +177,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.registrationResult.observe(this, Observer { success ->
+        viewModel.registrationResult.observe(this) { success ->
             if (success) {
                 Toast.makeText(
                     this@LoginActivity,
@@ -191,7 +190,7 @@ class LoginActivity : AppCompatActivity() {
                 registerBinding.registerLayout.visibility = View.VISIBLE
                 Toast.makeText(this@LoginActivity, "Regristation Failed", Toast.LENGTH_SHORT).show()
             }
-        })
+        }
 
 
         dialog.show()

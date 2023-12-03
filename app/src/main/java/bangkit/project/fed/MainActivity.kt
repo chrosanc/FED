@@ -3,7 +3,6 @@ package bangkit.project.fed
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -26,11 +26,12 @@ import bangkit.project.fed.data.datastore.dataStore
 import bangkit.project.fed.databinding.ActivityMainBinding
 import bangkit.project.fed.ui.captureegg.imagedisplay.ImageDisplayActivity
 import bangkit.project.fed.ui.setting.SettingViewModel
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var currentPhotoPath: String
+    private lateinit var mImageUri: Uri
     private val IMAGEPICKERREQUEST = 1
     private val CAMERACAPTUREREQUEST = 2
 
@@ -110,10 +111,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun requestCameraPermission() {
         val cameraPermission = Manifest.permission.CAMERA
-        if(ContextCompat.checkSelfPermission(
-            this,
-            cameraPermission
-        ) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                cameraPermission
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             startCameraCapture()
         } else {
             ActivityCompat.requestPermissions(
@@ -139,7 +141,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             CAMERACAPTUREREQUEST -> {
-                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startCameraCapture()
                 }
             }
@@ -149,7 +151,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun startCameraCapture() {
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(cameraIntent, CAMERACAPTUREREQUEST)
+        try {
+            val photo = createTemporaryFile("picture", ".jpg")
+            photo?.delete()
+            mImageUri = FileProvider.getUriForFile(this, "bangkit.project.fed.provider", photo!!)
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri)
+            startActivityForResult(cameraIntent, CAMERACAPTUREREQUEST)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun createTemporaryFile(part: String, ext: String): File? {
+
+        val tempDir = filesDir
+        if (!tempDir.exists()) {
+            tempDir.mkdirs()
+        }
+        return File.createTempFile(part, ext, tempDir)
     }
 
     private fun startGalleryPicker() {
@@ -159,8 +178,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == RESULT_OK) {
-            when(requestCode) {
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
                 IMAGEPICKERREQUEST -> {
                     val selectedImage: Uri? = data?.data
                     val intent = Intent(this, ImageDisplayActivity::class.java)
@@ -169,21 +188,17 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 CAMERACAPTUREREQUEST -> {
-                    val capturedImage = data?.extras?.get("data") as Bitmap?
-                    if (capturedImage != null) {
+                    val capturedImage : Uri = mImageUri
+                    capturedImage.let {
                         val intent = Intent(this, ImageDisplayActivity::class.java)
                         intent.putExtra("capturedImage", capturedImage)
                         startActivity(intent)
-                    } else {
-                        Toast.makeText(this, getString(R.string.failed_to_obtain_image), Toast.LENGTH_SHORT).show()
-                        val bottomNav:BottomNavigationView = findViewById(R.id.nav_view)
-                        bottomNav.selectedItemId = R.id.navigation_home
                     }
                 }
-
             }
         }
     }
+
 
     private fun setUpTheme() {
         val pref = PreferencesDataStore.getInstance(application.dataStore)
