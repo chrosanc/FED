@@ -115,15 +115,12 @@ class LoginActivity : AppCompatActivity() {
 
                 if (email.isEmpty()) {
                     emailEd.error = (getString(R.string.invalid_email))
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        emailEd.error = null
-                    }, 1000)
                 } else if (password.isEmpty()) {
                     passwordTextInputLayout.error = (getString(R.string.invalid_password))
                     passwordTextInputLayout.errorIconDrawable = null
                     Handler(Looper.getMainLooper()).postDelayed({
                         passwordTextInputLayout.error = null
-                    }, 1000)
+                    }, 2000)
                 } else {
                     progressBar.visibility = View.VISIBLE
                     loginLayout.visibility = View.INVISIBLE
@@ -198,28 +195,25 @@ class LoginActivity : AppCompatActivity() {
 
                 if (email.isEmpty()) {
                     emailEd.error = (getString(R.string.invalid_email))
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        emailEd.error = null
-                    }, 1000)
 
                 } else if (password.isEmpty()) {
                     passwordTextInputLayout.error = (getString(R.string.invalid_password))
                     passwordTextInputLayout.errorIconDrawable = null
                     Handler(Looper.getMainLooper()).postDelayed({
                         passwordTextInputLayout.error = null
-                    }, 1000)
+                    }, 2000)
                 } else if (confirmPassword.isEmpty()) {
                     confirmPasswordTextInputLayout.error = (getString(R.string.invalid_password))
                     confirmPasswordTextInputLayout.errorIconDrawable = null
                     Handler(Looper.getMainLooper()).postDelayed({
                         confirmPasswordTextInputLayout.error = null
-                    }, 1000)
+                    }, 2000)
                 } else if (password != confirmPassword) {
                     confirmPasswordTextInputLayout.error = (getString(R.string.invalid_confirmPassword))
                     confirmPasswordTextInputLayout.errorIconDrawable = null
                     Handler(Looper.getMainLooper()).postDelayed({
                     confirmPasswordTextInputLayout.error = null
-                }, 1000)
+                }, 2000)
                 } else {
                     // Continue with registration process
                     progressBar.visibility = View.VISIBLE
