@@ -37,6 +37,7 @@
             android:layout_marginEnd="50dp"
             android:layout_marginTop="40dp"
             />
+
         <EditText
             android:id="@+id/emailEd"
             android:layout_width="match_parent"
@@ -55,18 +56,27 @@
             android:text="@string/password"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:layout_marginTop="20dp" />
-        <EditText
-            android:id="@+id/passwordEd"
+            android:layout_marginTop="10dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/roundedcornerwithstroke"
-            android:padding="15dp"
-            android:inputType="textPassword"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:drawablePadding="10dp"
-            android:drawableStart="@drawable/passwordicon"/>
+            app:startIconDrawable="@drawable/passwordicon"
+            app:endIconMode="password_toggle"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordEd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/roundedcornerwithstroke"
+                android:padding="20dp"
+                android:inputType="textPassword"
+                android:drawableStart="@drawable/passwordicon"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/buttonLogin"

@@ -17,7 +17,7 @@
     <string name="searchbartext">Cari Gambar</string>
     <string name="recents">Terbaru</string>
     <string name="dateexample">Okt 8, 2023 9:25PM</string>
-    <string name="library">Library</string>
+    <string name="library">Kumpulan Gambar</string>
     <string name="name">Nama</string>
     <string name="forgottitle">Lupa Kata Sandi</string>
     <string name="send_email">Kami akan mengirimkan kode ke email Anda</string>
@@ -44,11 +44,15 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="failed_to_obtain_image">Gagal Mendapatkan Gambar</string>
     <string name="set_image_name">Mengatur Nama Gambar</string>
-    <string name="login_success">Masuk berhasil</string>
+    <string name="login_success">Hi Selamat Datang</string>
     <string name="loginfailed">Masuk gagal, %1$s</string>
     <string-array name="language_array">
         <item>English</item>
         <item>Bahasa Indonesia</item>
     </string-array>
     <string name="language">Language</string>
+    <string name="confirm_password">Konfirmasikan Kata Sandi Anda</string>
+    <string name="invalid_password">Kata sandi tidak boleh kosong</string>
+    <string name="invalid_confirmPassword">Kata sandi tidak cocok</string>
+    <string name="invalid_email">Email tidak boleh kosong</string>
 </resources>

@@ -8,7 +8,9 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.os.LocaleList
+import android.os.Looper
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +32,7 @@ import bangkit.project.fed.databinding.RegisterdialogBinding
 import bangkit.project.fed.ui.setting.SettingViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlin.concurrent.timer
 
 class LoginActivity : AppCompatActivity() {
 
@@ -40,7 +43,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var viewModel: LoginViewModel
     private lateinit var settingViewModel: SettingViewModel
     private lateinit var firestore: FirebaseFirestore
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -78,7 +80,7 @@ class LoginActivity : AppCompatActivity() {
             showLoginDialog()
         }
 
-        settingViewModel.getLocale().observe(this){
+        settingViewModel.getLocale().observe(this) {
             setLocale(it)
         }
     }
@@ -94,12 +96,14 @@ class LoginActivity : AppCompatActivity() {
 
         val textForgot = dialog.findViewById<TextView>(R.id.forgetText)
         textForgot.setOnClickListener {
+            dialog.dismiss()
             showForgotPWDialog()
         }
 
         //Login Dialog Feature Implementation
         loginBinding.apply {
             buttonRegister.setOnClickListener {
+                dialog.dismiss()
                 showRegisterDialog()
             }
 
@@ -110,9 +114,16 @@ class LoginActivity : AppCompatActivity() {
                 val password = passwordEd.text.toString().trim()
 
                 if (email.isEmpty()) {
-                    emailEd.error = "Email Should Not be Empty"
+                    emailEd.error = (getString(R.string.invalid_email))
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        emailEd.error = null
+                    }, 1000)
                 } else if (password.isEmpty()) {
-                    passwordEd.error = "Password Should Not be Empty"
+                    passwordTextInputLayout.error = (getString(R.string.invalid_password))
+                    passwordTextInputLayout.errorIconDrawable = null
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        passwordTextInputLayout.error = null
+                    }, 1000)
                 } else {
                     progressBar.visibility = View.VISIBLE
                     loginLayout.visibility = View.INVISIBLE
@@ -160,6 +171,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showRegisterDialog() {
+
+
         val dialog = Dialog(this)
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -170,6 +183,7 @@ class LoginActivity : AppCompatActivity() {
         registerBinding.apply {
 
             buttonLogin.setOnClickListener {
+                dialog.dismiss()
                 showLoginDialog()
             }
 
@@ -177,14 +191,37 @@ class LoginActivity : AppCompatActivity() {
                 val name = registerBinding.nameEd.text.toString().trim()
                 val emailEd = registerBinding.emailEd
                 val passwordEd = registerBinding.passwordEd
+                val confirmPasswordEd = registerBinding.confirmPasswordEd
                 val email = emailEd.text.toString().trim()
                 val password = passwordEd.text.toString().trim()
+                val confirmPassword = confirmPasswordEd.text.toString().trim()
 
                 if (email.isEmpty()) {
-                    emailEd.error = "Email Should Not be Empty"
+                    emailEd.error = (getString(R.string.invalid_email))
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        emailEd.error = null
+                    }, 1000)
+
                 } else if (password.isEmpty()) {
-                    passwordEd.error = "Password Should Not be Empty"
+                    passwordTextInputLayout.error = (getString(R.string.invalid_password))
+                    passwordTextInputLayout.errorIconDrawable = null
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        passwordTextInputLayout.error = null
+                    }, 1000)
+                } else if (confirmPassword.isEmpty()) {
+                    confirmPasswordTextInputLayout.error = (getString(R.string.invalid_password))
+                    confirmPasswordTextInputLayout.errorIconDrawable = null
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        confirmPasswordTextInputLayout.error = null
+                    }, 1000)
+                } else if (password != confirmPassword) {
+                    confirmPasswordTextInputLayout.error = (getString(R.string.invalid_confirmPassword))
+                    confirmPasswordTextInputLayout.errorIconDrawable = null
+                    Handler(Looper.getMainLooper()).postDelayed({
+                    confirmPasswordTextInputLayout.error = null
+                }, 1000)
                 } else {
+                    // Continue with registration process
                     progressBar.visibility = View.VISIBLE
                     registerLayout.visibility = View.INVISIBLE
 
@@ -239,7 +276,7 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    private fun setLocale( localeCode: String) {
+    private fun setLocale(localeCode: String) {
         val context = this@LoginActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.getSystemService(LOCALE_SERVICE).let { localeManager ->
@@ -251,4 +288,5 @@ class LoginActivity : AppCompatActivity() {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeCode))
         }
     }
+
 }

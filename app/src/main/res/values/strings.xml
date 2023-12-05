@@ -44,11 +44,15 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="failed_to_obtain_image">Failed to Obtain Image</string>
     <string name="set_image_name">Set Image Name</string>
-    <string name="login_success">Login Success</string>
+    <string name="login_success">Hi Welcome</string>
     <string name="loginfailed">Login Failed, %1$s</string>
     <string-array name="language_array">
         <item>English</item>
         <item>Bahasa Indonesia</item>
     </string-array>
     <string name="language">Language</string>
+    <string name="confirm_password">Confirm Your Password</string>
+    <string name="invalid_password">Password should not be empty</string>
+    <string name="invalid_confirmPassword">Passwords do not match</string>
+    <string name="invalid_email">Email should not be empty</string>
 </resources>

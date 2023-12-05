@@ -79,7 +79,7 @@ class SettingFragment : Fragment() {
         viewModel.getThemeSetting().observe(viewLifecycleOwner) {isDarkModeActive: Boolean ->
             if(isDarkModeActive) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                binding.profilePicture.setImageResource(R.drawable.profiletest)
+                binding.profilePicture.setImageResource(R.drawable.potokucing)
                 binding.profilePicture.alpha = 0f
                 binding.profilePicture.animate().alpha(1f).start()
                 binding.toggleDarkMode.isChecked = true
