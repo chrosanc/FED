@@ -1,22 +1,21 @@
 package bangkit.project.fed
 
 import android.Manifest
-import android.app.LocaleManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.LocaleList
 import android.provider.MediaStore
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
-import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -26,16 +25,22 @@ import bangkit.project.fed.data.ViewModelFactory
 import bangkit.project.fed.data.datastore.PreferencesDataStore
 import bangkit.project.fed.data.datastore.dataStore
 import bangkit.project.fed.databinding.ActivityMainBinding
-import bangkit.project.fed.databinding.FragmentSettingBinding
 import bangkit.project.fed.ui.captureegg.imagedisplay.ImageDisplayActivity
 import bangkit.project.fed.ui.setting.SettingViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.common.util.concurrent.ListenableFuture
 import java.io.File
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var mImageUri: Uri
+    private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
+    private lateinit var cameraExecutor: ExecutorService
+    private lateinit var imageCapture: ImageCapture
     private val IMAGEPICKERREQUEST = 1
     private val CAMERACAPTUREREQUEST = 2
 
@@ -44,6 +49,9 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        cameraExecutor = Executors.newSingleThreadExecutor()
+        imageCapture = ImageCapture.Builder().build()
 
         setUpTheme()
 
@@ -154,19 +162,58 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startCameraCapture() {
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        try {
-            val photo = createTemporaryFile("picture", ".jpg")
-            photo?.delete()
-            mImageUri = FileProvider.getUriForFile(this, "bangkit.project.fed.provider", photo!!)
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri)
-            startActivityForResult(cameraIntent, CAMERACAPTUREREQUEST)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        // Get the CameraProvider
+        cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+
+        cameraProviderFuture.addListener({
+            // CameraProvider is now ready
+            val cameraProvider = cameraProviderFuture.get()
+
+
+            // Create a unique file to save the image
+            val photoFile = createTemporaryFile("picture", ".jpg")
+
+            // Set up the image capture use case
+            imageCapture = ImageCapture.Builder()
+                .setTargetRotation(windowManager.defaultDisplay.rotation)
+                .build()
+
+
+
+            try {
+                // Connect the use cases to the Camera
+                cameraProvider.bindToLifecycle(
+                    this, CameraSelector.DEFAULT_BACK_CAMERA, imageCapture
+                )
+
+                // Set up the output file for the image
+                val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+                // Capture the image
+                imageCapture.takePicture(
+                    outputOptions, ContextCompat.getMainExecutor(this),
+                    object : ImageCapture.OnImageSavedCallback {
+                        override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                            // Image saved successfully, proceed to the next step
+                            val capturedImageUri = Uri.fromFile(photoFile)
+                            val intent = Intent(this@MainActivity, ImageDisplayActivity::class.java)
+                            intent.putExtra("capturedImage", capturedImageUri)
+                            startActivity(intent)
+                        }
+
+                        override fun onError(exception: ImageCaptureException) {
+                            // Handle the error
+                            exception.printStackTrace()
+                        }
+                    }
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }, ContextCompat.getMainExecutor(this))
     }
 
-    private fun createTemporaryFile(part: String, ext: String): File? {
+    private fun createTemporaryFile(part: String, ext: String): File {
 
         val tempDir = filesDir
         if (!tempDir.exists()) {
