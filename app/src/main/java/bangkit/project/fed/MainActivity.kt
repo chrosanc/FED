@@ -25,6 +25,7 @@ import bangkit.project.fed.data.ViewModelFactory
 import bangkit.project.fed.data.datastore.PreferencesDataStore
 import bangkit.project.fed.data.datastore.dataStore
 import bangkit.project.fed.databinding.ActivityMainBinding
+import bangkit.project.fed.ui.captureegg.camera.CameraActivity
 import bangkit.project.fed.ui.captureegg.imagedisplay.ImageDisplayActivity
 import bangkit.project.fed.ui.setting.SettingViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -162,64 +163,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startCameraCapture() {
-        // Get the CameraProvider
-        cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-
-        cameraProviderFuture.addListener({
-            // CameraProvider is now ready
-            val cameraProvider = cameraProviderFuture.get()
-
-
-            // Create a unique file to save the image
-            val photoFile = createTemporaryFile("picture", ".jpg")
-
-            // Set up the image capture use case
-            imageCapture = ImageCapture.Builder()
-                .setTargetRotation(windowManager.defaultDisplay.rotation)
-                .build()
-
-
-
-            try {
-                // Connect the use cases to the Camera
-                cameraProvider.bindToLifecycle(
-                    this, CameraSelector.DEFAULT_BACK_CAMERA, imageCapture
-                )
-
-                // Set up the output file for the image
-                val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-
-                // Capture the image
-                imageCapture.takePicture(
-                    outputOptions, ContextCompat.getMainExecutor(this),
-                    object : ImageCapture.OnImageSavedCallback {
-                        override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                            // Image saved successfully, proceed to the next step
-                            val capturedImageUri = Uri.fromFile(photoFile)
-                            val intent = Intent(this@MainActivity, ImageDisplayActivity::class.java)
-                            intent.putExtra("capturedImage", capturedImageUri)
-                            startActivity(intent)
-                        }
-
-                        override fun onError(exception: ImageCaptureException) {
-                            // Handle the error
-                            exception.printStackTrace()
-                        }
-                    }
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }, ContextCompat.getMainExecutor(this))
-    }
-
-    private fun createTemporaryFile(part: String, ext: String): File {
-
-        val tempDir = filesDir
-        if (!tempDir.exists()) {
-            tempDir.mkdirs()
-        }
-        return File.createTempFile(part, ext, tempDir)
+        val intent = Intent(this@MainActivity, CameraActivity::class.java)
+        startActivity(intent)
     }
 
     private fun startGalleryPicker() {
@@ -239,7 +184,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 CAMERACAPTUREREQUEST -> {
-                    val capturedImage : Uri = mImageUri
+                    val capturedImage: Uri = mImageUri
                     capturedImage.let {
                         val intent = Intent(this, ImageDisplayActivity::class.java)
                         intent.putExtra("capturedImage", capturedImage)
