@@ -55,4 +55,5 @@
     <string name="invalid_password">Password should not be empty</string>
     <string name="invalid_confirmPassword">Passwords do not match</string>
     <string name="invalid_email">Email should not be empty</string>
+    <string name="empty_image_warning">Please insert the image file first.</string>
 </resources>

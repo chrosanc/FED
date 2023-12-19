@@ -1,14 +1,31 @@
 package bangkit.project.fed.ui.captureegg.imagedisplay
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import bangkit.project.fed.R
+import bangkit.project.fed.data.api.ApiConfig
 import bangkit.project.fed.databinding.ActivityImageDisplayBinding
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ImageDisplayActivity : AppCompatActivity() {
 
@@ -31,8 +48,65 @@ class ImageDisplayActivity : AppCompatActivity() {
     }
 
     private fun uploadImage() {
-        TODO("Not yet implemented")
+            val imageName = binding.photonameEd.text.toString().trim()
+
+            if (imageName.isEmpty()) {
+                showToast(getString(R.string.empty_image_warning))
+                return
+            }
+            lifecycleScope.launch {
+                val labelRequestBody = RequestBody.create("text/plain".toMediaType(), imageName)
+
+                val file = convertBitmapToFile(originalBitmap).reduceFileImage()
+                val requestFile = RequestBody.create("multipart/form-data".toMediaType(), file)
+                val filePart = MultipartBody.Part.createFormData("file", file.name, requestFile)
+                Log.i("infoo", file.length().toString())
+
+                val apiService = ApiConfig.getApiService()
+
+                try {
+                    val response = apiService.uploadImage(filePart, labelRequestBody)
+                    showToast("Image uploaded successfully. Response: ${response.message}")
+                } catch (e: Exception) {
+                    showToast("Error uploading image: ${e.message}")
+                    Log.e("UploadImage", "Error uploading image", e)
+                }
+            }
+        }
+
+    private fun convertBitmapToFile(bitmap: Bitmap): File {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val fileName = "IMG_${timeStamp}.png"
+        val file = File(cacheDir, fileName)
+
+        try {
+            val outputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+        } catch (e: Exception) {
+            Log.e("ConvertBitmapToFile", "Error converting bitmap to file", e)
+        }
+
+        return file
     }
+
+    fun File.reduceFileImage(): File {
+        val file = this
+        val bitmap = BitmapFactory.decodeFile(file.path)
+        var compressQuality = 100
+        var streamLength: Int
+        do {
+            val bmpStream = ByteArrayOutputStream()
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, compressQuality, bmpStream)
+            val bmpPicByteArray = bmpStream.toByteArray()
+            streamLength = bmpPicByteArray.size
+            compressQuality -= 5
+        } while (streamLength > MAXIMAL_SIZE)
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
+        return file
+    }
+
 
     private fun getImage() {
         val imageUri = intent.getParcelableExtra<Uri>("imageUri")
@@ -87,5 +161,12 @@ class ImageDisplayActivity : AppCompatActivity() {
         originalBitmap = rotatedBitmap
 
     }
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
 
+    companion object{
+        private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
+        private const val MAXIMAL_SIZE = 1000000
+    }
 }

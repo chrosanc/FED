@@ -111,8 +111,8 @@
             android:layout_height="wrap_content"
             android:text="@string/forgot"
             android:textColor="@color/black"
-            android:layout_marginStart="110dp"
-            android:layout_marginBottom="70dp"/>
+            android:layout_gravity="center"
+            android:layout_marginBottom="80dp"/>
 
 
     </LinearLayout>

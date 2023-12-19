@@ -28,7 +28,6 @@
         android:id="@+id/flashlight"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:rotation="180"
         android:src="@drawable/personicon"
         android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"

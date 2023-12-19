@@ -55,4 +55,5 @@
     <string name="invalid_password">Kata sandi tidak boleh kosong</string>
     <string name="invalid_confirmPassword">Kata sandi tidak cocok</string>
     <string name="invalid_email">Email tidak boleh kosong</string>
+    <string name="empty_image_warning">Silakan masukkan berkas gambar terlebih dahulu.</string>
 </resources>
