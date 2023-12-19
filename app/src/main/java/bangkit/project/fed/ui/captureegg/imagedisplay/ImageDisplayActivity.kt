@@ -23,7 +23,15 @@ class ImageDisplayActivity : AppCompatActivity() {
         binding.back.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
+
+        binding.uploadButton.setOnClickListener {
+            uploadImage()
+        }
         getImage()
+    }
+
+    private fun uploadImage() {
+        TODO("Not yet implemented")
     }
 
     private fun getImage() {
