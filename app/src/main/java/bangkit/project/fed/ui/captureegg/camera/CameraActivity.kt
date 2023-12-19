@@ -1,13 +1,11 @@
 package bangkit.project.fed.ui.captureegg.camera
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.MotionEvent
-import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.Camera
 import androidx.camera.core.CameraControl
 import androidx.camera.core.CameraInfoUnavailableException
 import androidx.camera.core.CameraSelector
@@ -21,6 +19,7 @@ import androidx.core.content.FileProvider
 import bangkit.project.fed.databinding.ActivityCameraBinding
 import bangkit.project.fed.ui.captureegg.imagedisplay.ImageDisplayActivity
 import java.io.File
+import java.text.NumberFormat
 
 class CameraActivity : AppCompatActivity() {
 
@@ -28,6 +27,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var imageCapture: ImageCapture
     private lateinit var preview: Preview
     private lateinit var gestureDetector: GestureDetector
+
     private var flashEnabled = false
     private var cameraControl : CameraControl? = null
 
