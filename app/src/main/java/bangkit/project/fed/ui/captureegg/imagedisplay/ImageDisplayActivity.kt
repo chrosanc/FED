@@ -1,15 +1,15 @@
 package bangkit.project.fed.ui.captureegg.imagedisplay
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import bangkit.project.fed.R
 import bangkit.project.fed.data.api.ApiConfig
@@ -18,11 +18,11 @@ import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -54,11 +54,12 @@ class ImageDisplayActivity : AppCompatActivity() {
                 showToast(getString(R.string.empty_image_warning))
                 return
             }
+            showLoading(true)
             lifecycleScope.launch {
-                val labelRequestBody = RequestBody.create("text/plain".toMediaType(), imageName)
+                val labelRequestBody = imageName.toRequestBody("text/plain".toMediaType())
 
                 val file = convertBitmapToFile(originalBitmap).reduceFileImage()
-                val requestFile = RequestBody.create("multipart/form-data".toMediaType(), file)
+                val requestFile = file.asRequestBody("multipart/form-data".toMediaType())
                 val filePart = MultipartBody.Part.createFormData("file", file.name, requestFile)
                 Log.i("infoo", file.length().toString())
 
@@ -70,6 +71,8 @@ class ImageDisplayActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     showToast("Error uploading image: ${e.message}")
                     Log.e("UploadImage", "Error uploading image", e)
+                } finally {
+                    showLoading(false) // Menyembunyikan ProgressBar setelah upload selesai
                 }
             }
         }
@@ -91,7 +94,7 @@ class ImageDisplayActivity : AppCompatActivity() {
         return file
     }
 
-    fun File.reduceFileImage(): File {
+    private fun File.reduceFileImage(): File {
         val file = this
         val bitmap = BitmapFactory.decodeFile(file.path)
         var compressQuality = 100
@@ -164,9 +167,11 @@ class ImageDisplayActivity : AppCompatActivity() {
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
 
     companion object{
-        private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
         private const val MAXIMAL_SIZE = 1000000
     }
 }
