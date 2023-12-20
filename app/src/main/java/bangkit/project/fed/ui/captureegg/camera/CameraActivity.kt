@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import bangkit.project.fed.databinding.ActivityCameraBinding
 import bangkit.project.fed.ui.captureegg.imagedisplay.ImageDisplayActivity
+import com.google.common.util.concurrent.ListenableFuture
 import org.tensorflow.lite.task.vision.classifier.Classifications
 import java.io.File
 import java.text.NumberFormat
@@ -31,6 +32,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var preview: Preview
     private lateinit var gestureDetector: GestureDetector
     private lateinit var imageClassifierHelper: ImageClassifierHelper
+    private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
 
     private var flashEnabled = false
     private var cameraControl : CameraControl? = null
@@ -93,7 +95,7 @@ class CameraActivity : AppCompatActivity() {
 
 
         // Get the CameraProvider
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
             // CameraProvider is now ready
@@ -104,7 +106,7 @@ class CameraActivity : AppCompatActivity() {
             preview.setSurfaceProvider(binding.preview.surfaceProvider)
 
             val imageAnalyzer = ImageAnalysis.Builder()
-                .setTargetRotation(binding.preview.display.rotation)
+                .setTargetRotation(windowManager.defaultDisplay.rotation)
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                 .build()
@@ -197,17 +199,14 @@ class CameraActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-
-        override fun onPause() {
-        super.onPause()
-        imageClassifierHelper.clearImageClassifier()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (imageClassifierHelper.isClosed()) {
-            imageClassifierHelper.setupImageClassifier()
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraProviderFuture.addListener({
+            val cameraProvider = cameraProviderFuture.get()
+            cameraProvider.unbindAll()
+            imageClassifierHelper.clearImageClassifier()
+            // Release additional TensorFlow Lite resources if needed.
+        }, ContextCompat.getMainExecutor(this))
     }
 
 
