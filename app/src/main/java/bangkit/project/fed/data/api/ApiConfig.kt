@@ -1,14 +1,25 @@
 package bangkit.project.fed.data.api
 
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiConfig {
-    fun getApiService(): ApiService {
+    fun getApiService(userId: String): ApiService {
         val loggingInterceptor =
             HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+
+        val userIdInterceptor = Interceptor {chain ->
+            val originalRequest = chain.request()
+            val modifiedRequest = originalRequest.newBuilder()
+                .header("userId", userId)
+                .build()
+
+            chain.proceed(modifiedRequest)
+        }
+
         val client = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .build()

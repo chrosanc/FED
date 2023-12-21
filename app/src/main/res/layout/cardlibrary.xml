@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout 
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:orientation="horizontal">
-        
+
         <ImageView
+            android:id="@+id/image"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
+            android:scaleType="centerCrop"
             android:background="@color/md_theme_dark_secondary"/>
 
         <LinearLayout
@@ -27,11 +29,13 @@
             android:gravity="center">
 
             <TextView
+                android:id="@+id/label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/app_name"/>
 
             <TextView
+                android:id="@+id/date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/dateexample"/>
@@ -46,6 +50,7 @@
             android:gravity="end|center">
 
             <ImageView
+                android:id="@+id/menu"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/baseline_menu_24"/>
