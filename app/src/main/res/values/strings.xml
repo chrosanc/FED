@@ -56,4 +56,7 @@
     <string name="invalid_confirmPassword">Passwords do not match</string>
     <string name="invalid_email">Email should not be empty</string>
     <string name="empty_image_warning">Please insert the image file first.</string>
+    <string name="detection">detection</string>
+    <string name="camera">Camera</string>
+    <string name="realtime">Realtime</string>
 </resources>
