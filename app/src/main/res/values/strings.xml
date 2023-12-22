@@ -56,4 +56,20 @@
     <string name="invalid_confirmPassword">Passwords do not match</string>
     <string name="invalid_email">Email should not be empty</string>
     <string name="empty_image_warning">Please insert the image file first.</string>
+    <string name="ed_nameProfile">Profile Name</string>
+    <string name="nama_label">Name</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Save">Save</string>
+    <string name="change_profile">Change Picture</string>
+    <string name="konfirmasi">Confirm</string>
+    <string name="konfirmasi_message">\"Are you sure you want to change it?\"</string>
+    <string name="password_lama">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="password_minimal_characters">password must be more than 6</string>
+    <string name="email_tidak_valid">Invalid email</string>
+    <string name="new_email">New Email</string>
+    <string name="error">Cannoooooooot...</string>
+    <string name="choose_gallery">Choose From Galery</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="select_image_source">Select Image</string>
 </resources>

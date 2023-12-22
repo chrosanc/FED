@@ -56,4 +56,20 @@
     <string name="invalid_confirmPassword">Kata sandi tidak cocok</string>
     <string name="invalid_email">Email tidak boleh kosong</string>
     <string name="empty_image_warning">Silakan masukkan berkas gambar terlebih dahulu.</string>
+    <string name="ed_nameProfile">Nama Profil</string>
+    <string name="nama_label">Nama</string>
+    <string name="Cancel">Batalkan</string>
+    <string name="Save">Simpan</string>
+    <string name="change_profile">Ubah Gambar</string>
+    <string name="konfirmasi">Konfirmasi</string>
+    <string name="konfirmasi_message">\"Apakah Anda yakin ingin mengubahnya?\"</string>
+    <string name="password_lama">Password Lama</string>
+    <string name="new_password">Password Baru</string>
+    <string name="password_minimal_characters">Password harus lebih dari 6</string>
+    <string name="email_tidak_valid">Email tidak valid</string>
+    <string name="new_email">Email baru</string>
+    <string name="error">gabisaaaaaaaaaaaaaaaaaaa</string>
+    <string name="choose_gallery">Pilih dari Galery</string>
+    <string name="take_photo">Ambil Foto</string>
+    <string name="select_image_source">Pilih Gambar</string>
 </resources>

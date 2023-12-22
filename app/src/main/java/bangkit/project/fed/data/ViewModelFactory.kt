@@ -9,10 +9,11 @@ class ViewModelFactory(private val pref:PreferencesDataStore) : ViewModelProvide
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(SettingViewModel::class.java)){
-            return SettingViewModel(pref) as T
+        return when {
+            modelClass.isAssignableFrom(SettingViewModel::class.java) -> {
+                SettingViewModel(pref) as T
+            }
+            else -> throw IllegalArgumentException("Unknown ViewModel Class: " + modelClass.name)
         }
-        throw IllegalArgumentException("Unknown ViewModel Class: " + modelClass.name)
     }
-
 }

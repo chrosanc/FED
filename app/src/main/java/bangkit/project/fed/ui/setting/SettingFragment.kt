@@ -2,6 +2,7 @@ package bangkit.project.fed.ui.setting
 
 import android.app.LocaleManager
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.LocaleList
@@ -11,39 +12,55 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import bangkit.project.fed.R
+import bangkit.project.fed.data.SharedViewModel
 import bangkit.project.fed.data.ViewModelFactory
 import bangkit.project.fed.data.datastore.PreferencesDataStore
 import bangkit.project.fed.data.datastore.dataStore
 import bangkit.project.fed.databinding.FragmentSettingBinding
 import bangkit.project.fed.ui.login.LoginActivity
-import java.text.FieldPosition
+import bangkit.project.fed.ui.setting.configureAccount.ConfigureAccountActivity
+import bangkit.project.fed.ui.setting.configureprofile.ConfigureProfileActivity
 
 class SettingFragment : Fragment() {
 
-    private var _binding: FragmentSettingBinding? = null
+    private lateinit var sharedViewModel: SharedViewModel
 
+    private var _binding: FragmentSettingBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var settingViewModel: SettingViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+
+        sharedViewModel.selectedImageUri.observe(viewLifecycleOwner) { imageUri ->
+            if (imageUri != null) {
+                binding.profilePicture.setImageURI(imageUri)
+            } else {
+                binding.profilePicture.setImageResource(R.drawable.potokucing)
+            }
+        }
+
         val pref = PreferencesDataStore.getInstance(requireContext().applicationContext.dataStore)
-        val viewModel =
-            ViewModelProvider(this, ViewModelFactory(pref))[SettingViewModel::class.java]
+        val viewModelFactory = ViewModelFactory(pref)
+        settingViewModel = ViewModelProvider(this, viewModelFactory)[SettingViewModel::class.java]
         _binding = FragmentSettingBinding.inflate(inflater, container, false)
 
         val language: Array<String> = resources.getStringArray(R.array.language_array)
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, language)
-        viewModel.getLocale().observe(viewLifecycleOwner) {
+        settingViewModel.getLocale().observe(viewLifecycleOwner) {
             when (it) {
                 "in" -> {
                     binding.spLanguage.setSelection(arrayAdapter.getPosition(language[1]))
@@ -63,9 +80,9 @@ class SettingFragment : Fragment() {
                     id: Long
                 ) {
                     if(parent?.getItemAtPosition(position).toString() == language[1]) {
-                        setLocale("in", viewModel)
+                        setLocale("in", settingViewModel)
                     } else {
-                        setLocale("en", viewModel)
+                        setLocale("en", settingViewModel)
                     }
                 }
 
@@ -76,16 +93,14 @@ class SettingFragment : Fragment() {
         }
 
 
-        viewModel.getThemeSetting().observe(viewLifecycleOwner) {isDarkModeActive: Boolean ->
+        settingViewModel.getThemeSetting().observe(viewLifecycleOwner) {isDarkModeActive: Boolean ->
             if(isDarkModeActive) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                binding.profilePicture.setImageResource(R.drawable.potokucing)
                 binding.profilePicture.alpha = 0f
                 binding.profilePicture.animate().alpha(1f).start()
                 binding.toggleDarkMode.isChecked = true
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                binding.profilePicture.setImageResource(R.drawable.potokucing)
                 binding.profilePicture.alpha = 0f
                 binding.profilePicture.animate().alpha(1f).start()
                 binding.toggleDarkMode.isChecked = false
@@ -93,26 +108,67 @@ class SettingFragment : Fragment() {
         }
 
         binding.toggleDarkMode.setOnCheckedChangeListener{ _: CompoundButton?, isChecked: Boolean ->
-            viewModel.saveThemeSetting(isChecked)
+            settingViewModel.saveThemeSetting(isChecked)
         }
 
 
         binding.buttonLogout.setOnClickListener {
-            viewModel.logout()
+            settingViewModel.logout()
             navigatetoLogin()
         }
 
-        viewModel.userName.observe(viewLifecycleOwner, Observer { displayName ->
-            binding.nameText.text = displayName
-        })
+        binding.buttonDisplayProfile.setOnClickListener {
+            val intent = Intent(activity, ConfigureProfileActivity::class.java)
+            @Suppress("DEPRECATION")
+            startActivityForResult(intent, REQUEST_CODE_CONFIGURE_PROFILE)
+        }
 
-        viewModel.userEmail.observe(viewLifecycleOwner, Observer {userEmail ->
+        binding.buttonAccount.setOnClickListener{
+            val intent = Intent(activity, ConfigureAccountActivity::class.java)
+            @Suppress("DEPRECATION")
+            startActivityForResult(intent, REQUEST_CODE_CONFIGURE_ACCOUNT)
+        }
+
+        settingViewModel.userName.observe(viewLifecycleOwner) { displayName ->
+            binding.nameText.text = displayName
+        }
+
+        settingViewModel.userEmail.observe(viewLifecycleOwner) { userEmail ->
             binding.emailText.text = userEmail
-        })
+        }
 
         return binding.root
 
     }
+
+
+    @Suppress("DEPRECATION")
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_CONFIGURE_PROFILE && resultCode == AppCompatActivity.RESULT_OK) {
+            updateUserData(data)
+        }
+        if (requestCode ==  REQUEST_CODE_CONFIGURE_ACCOUNT && resultCode == AppCompatActivity.RESULT_OK) {
+            updateUserData(data)
+        }
+    }
+
+    private fun updateUserData(data: Intent?) {
+        val imageUri: Uri? = data?.getParcelableExtra("imageUri")
+
+        sharedViewModel.setSelectedImageUri(imageUri)
+
+        if (imageUri != null) {
+            binding.profilePicture.setImageURI(imageUri)
+        } else {
+            binding.profilePicture.setImageResource(R.drawable.potokucing)
+        }
+
+        settingViewModel.loadUserData()
+    }
+
 
 
     private fun navigatetoLogin() {
@@ -141,4 +197,12 @@ class SettingFragment : Fragment() {
         }
     }
 
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    companion object {
+        private const val REQUEST_CODE_CONFIGURE_PROFILE = 123
+        private const val REQUEST_CODE_CONFIGURE_ACCOUNT = 111
+    }
 }

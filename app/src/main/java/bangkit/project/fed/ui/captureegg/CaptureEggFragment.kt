@@ -27,6 +27,7 @@ class CaptureEggFragment : Fragment() {
         val root: View = binding.root
 
         return root
+
     }
 
     override fun onDestroyView() {

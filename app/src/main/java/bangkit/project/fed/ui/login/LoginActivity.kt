@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.LocaleList
@@ -17,6 +16,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.core.os.LocaleListCompat
@@ -27,18 +27,19 @@ import bangkit.project.fed.data.ViewModelFactory
 import bangkit.project.fed.data.datastore.PreferencesDataStore
 import bangkit.project.fed.data.datastore.dataStore
 import bangkit.project.fed.databinding.ActivityLoginBinding
+import bangkit.project.fed.databinding.ForgotdialogBinding
 import bangkit.project.fed.databinding.LogindialogBinding
 import bangkit.project.fed.databinding.RegisterdialogBinding
 import bangkit.project.fed.ui.setting.SettingViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlin.concurrent.timer
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var registerBinding: RegisterdialogBinding
     private lateinit var loginBinding: LogindialogBinding
+    private lateinit var forgotbinding: ForgotdialogBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var viewModel: LoginViewModel
     private lateinit var settingViewModel: SettingViewModel
@@ -168,8 +169,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showRegisterDialog() {
-
-
         val dialog = Dialog(this)
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -252,13 +251,47 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showForgotPWDialog() {
+        val auth = FirebaseAuth.getInstance()
         val dialog = Dialog(this)
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.forgotdialog)
+        forgotbinding = ForgotdialogBinding.inflate(layoutInflater)
+        dialog.setContentView(forgotbinding.root)
 
+        // Get email input and button from the layout
+        val emailEd = forgotbinding.emailEd
+        val buttonForgot = forgotbinding.buttonForgot
 
+        buttonForgot.setOnClickListener {
+            // Get the email entered by the user
+            val email = emailEd.text.toString().trim()
 
+            // Check if the email is not empty
+            if (email.isNotEmpty()) {
+                // Use Firebase Authentication to send a password reset email
+                auth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Password reset email sent successfully
+                            Toast.makeText(
+                                this,
+                                "Password reset email sent to $email",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            // Password reset email failed
+                            Toast.makeText(
+                                this,
+                                "Failed to send password reset email. Please check your email and try again.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+            } else {
+                // Email is empty, show a message to the user
+                Toast.makeText(this, "Please enter your email", Toast.LENGTH_SHORT).show()
+            }
+        }
         dialog.show()
         dialog.window?.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -267,7 +300,6 @@ class LoginActivity : AppCompatActivity() {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
         dialog.window?.setGravity(Gravity.BOTTOM)
-
     }
 
     private fun setLocale(localeCode: String) {
