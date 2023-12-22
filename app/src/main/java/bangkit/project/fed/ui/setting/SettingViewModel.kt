@@ -43,7 +43,7 @@ class SettingViewModel(private val pref : PreferencesDataStore) : ViewModel() {
         }
     }
 
-    private fun loadUserData() {
+    fun loadUserData() {
         auth.currentUser?.uid.let { userId ->
             if (userId != null) {
                 firestore.collection("users").document(userId)

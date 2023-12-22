@@ -55,7 +55,7 @@
             android:drawablePadding="10dp"/>
 
         <Button
-            android:id="@+id/buttonSendLogin"
+            android:id="@+id/buttonForgot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
