@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import bangkit.project.fed.databinding.FragmentHomeBinding
 import bangkit.project.fed.ui.home.adapter.LibraryRvAdapter
+import bangkit.project.fed.ui.home.adapter.RecentRvAdapter
 import com.google.firebase.auth.FirebaseAuth
 
 class HomeFragment : Fragment() {
@@ -18,7 +19,8 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
     private lateinit var viewModel: HomeViewModel
-    private lateinit var adapter: LibraryRvAdapter
+    private lateinit var libraryAdapter: LibraryRvAdapter
+    private lateinit var recentAdapter: RecentRvAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,24 +32,43 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         auth = FirebaseAuth.getInstance()
+        getLibraryList()
+        getRecentList()
+
+        return binding.root
+    }
+
+    private fun getRecentList() {
+
+        val currentUser = auth.currentUser
+        currentUser?.uid?.let {
+            viewModel.fetchEggDataByRecentDate(it)
+        }
+
+        recentAdapter = RecentRvAdapter(requireContext())
+        binding.recentRv.adapter = recentAdapter
+        binding.recentRv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        viewModel.eggDataList.observe(viewLifecycleOwner) {eggDataList ->
+            recentAdapter.submitList(eggDataList)
+        }
+
+
+    }
+
+    private fun getLibraryList() {
+
         val currentUser = auth.currentUser
         currentUser?.uid?.let { userId ->
             viewModel.fetchEggDataByUserId(userId)
         }
 
-        getLibraryList()
-
-        return binding.root
-    }
-
-    private fun getLibraryList() {
-
-        adapter = LibraryRvAdapter(requireContext())
-        binding.LibraryRv.adapter = adapter
+        libraryAdapter = LibraryRvAdapter(requireContext())
+        binding.LibraryRv.adapter = libraryAdapter
         binding.LibraryRv.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.eggDataList.observe(viewLifecycleOwner) { eggDataList ->
-            adapter.submitList(eggDataList)
+            libraryAdapter.submitList(eggDataList)
         }
 
     }

@@ -30,6 +30,10 @@ import bangkit.project.fed.ui.captureegg.imagedisplay.ImageDisplayActivity
 import bangkit.project.fed.ui.setting.SettingViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.common.util.concurrent.ListenableFuture
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -45,8 +49,18 @@ class MainActivity : AppCompatActivity() {
     private val IMAGEPICKERREQUEST = 1
     private val CAMERACAPTUREREQUEST = 2
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        FirebaseApp.initializeApp(this);
+        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+            SafetyNetAppCheckProviderFactory.getInstance())
+
+        val appCheckProviderFactory = DebugAppCheckProviderFactory.getInstance()
+        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(appCheckProviderFactory)
+
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

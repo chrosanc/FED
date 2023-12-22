@@ -19,5 +19,11 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+    fun fetchEggDataByRecentDate(userId: String){
+        firestoreHelper.getDataEggByRecentDate(userId){eggDataList ->
+            _eggDataList.value = eggDataList
+
+        }
+    }
 
 }
