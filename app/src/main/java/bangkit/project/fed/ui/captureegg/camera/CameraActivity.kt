@@ -1,155 +1,76 @@
 package bangkit.project.fed.ui.captureegg.camera
 
-import android.content.Intent
+import android.content.DialogInterface
 import android.os.Bundle
-import android.view.GestureDetector
-import android.view.MotionEvent
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraControl
-import androidx.camera.core.CameraInfoUnavailableException
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.FocusMeteringAction
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import bangkit.project.fed.databinding.ActivityCameraBinding
-import bangkit.project.fed.ui.captureegg.imagedisplay.ImageDisplayActivity
-import java.io.File
-import java.text.NumberFormat
+import com.google.android.material.tabs.TabLayoutMediator
+import org.tensorflow.lite.gpu.CompatibilityList
+import org.tensorflow.lite.gpu.GpuDelegate
+import org.tensorflow.lite.task.vision.classifier.Classifications
 
 class CameraActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCameraBinding
-    private lateinit var imageCapture: ImageCapture
-    private lateinit var preview: Preview
-    private lateinit var gestureDetector: GestureDetector
-
-    private var flashEnabled = false
-    private var cameraControl : CameraControl? = null
+    private lateinit var viewPagerAdapter: CameraPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        gestureDetector = GestureDetector(this, GestureListener())
+        viewPagerAdapter = CameraPagerAdapter(supportFragmentManager, lifecycle)
+        binding.viewPager.adapter = viewPagerAdapter
 
-        binding.preview.setOnTouchListener { _, event ->
-            gestureDetector.onTouchEvent(event)
-            if (event.action == MotionEvent.ACTION_UP) {
-                binding.preview.performClick()
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            when (position) {
+                0 -> tab.text = "Camera"
+                1 -> tab.text = "Realtime"
             }
-            true
+        }.attach()
+
+        if (binding.viewPager.currentItem == 1) {
+            checkDeviceSupport()
         }
 
-        binding.flashlight.setOnClickListener {
-            toggleFlash()
-        }
-
-        binding.capture.setOnClickListener {
-            takePicture()
-        }
-
-        startCameraCapture()
     }
 
-    private fun startCameraCapture() {
-        // Get the CameraProvider
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+    private fun checkDeviceSupport() {
+        if (CompatibilityList().isDelegateSupportedOnThisDevice) {
+            val imageClassifierHelper = ImageClassifierHelper(
+                context = this,
+                currentDelegate = ImageClassifierHelper.DELEGATE_GPU,
+                imageClassifierListener = object : ImageClassifierHelper.ClassifierListener {
+                    override fun onError(error: String) {
+                        // Handle the error and show the alert dialog
+                        showAlertDialog("Error", error)
 
-        cameraProviderFuture.addListener({
-            // CameraProvider is now ready
-            val cameraProvider = cameraProviderFuture.get()
+                        // If GPU is not supported, switch back to the Camera fragment (position 0)
+                        binding.viewPager.currentItem = 0
+                    }
 
-            // Set up the preview
-            preview = Preview.Builder().build()
-            preview.setSurfaceProvider(binding.preview.surfaceProvider)
-
-            // Set up the image capture use case
-            imageCapture = ImageCapture.Builder()
-                .setTargetRotation(windowManager.defaultDisplay.rotation)
-                .build()
-
-            try {
-                // Connect the preview use case to the Camera
-                cameraProvider.bindToLifecycle(
-                    this, CameraSelector.DEFAULT_BACK_CAMERA, preview
-                )
-
-                // Now, bind the ImageCapture use case to the Camera
-                cameraProvider.bindToLifecycle(
-                    this, CameraSelector.DEFAULT_BACK_CAMERA, imageCapture
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }, ContextCompat.getMainExecutor(this))
-    }
-
-    private fun toggleFlash() {
-        flashEnabled = !flashEnabled
-        imageCapture.flashMode =
-            if (flashEnabled) {
-                ImageCapture.FLASH_MODE_ON
-            } else {
-                ImageCapture.FLASH_MODE_OFF
-            }
-    }
-
-    private fun takePicture() {
-        val photoFile = createTemporaryFile("picture", ".jpg")
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-
-        imageCapture.takePicture(
-            outputOptions, ContextCompat.getMainExecutor(this),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val mImageUri =
-                        FileProvider.getUriForFile(this@CameraActivity, "bangkit.project.fed.provider", photoFile)
-                    val intent = Intent(this@CameraActivity, ImageDisplayActivity::class.java)
-                    intent.putExtra("capturedImage", mImageUri)
-                    startActivity(intent)
+                    override fun onResults(results: List<Classifications>?, inferenceTime: Long) {
+                        // Handle classification results if needed
+                    }
                 }
+            )
 
-                override fun onError(exception: ImageCaptureException) {
-                    exception.printStackTrace()
-                }
-            }
-        )
-    }
-
-    private fun createTemporaryFile(part: String, ext: String): File {
-        val tempDir = filesDir
-        if (!tempDir.exists()) {
-            tempDir.mkdirs()
-        }
-        return File.createTempFile(part, ext, tempDir)
-    }
-
-    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            e?.let {
-                handleTapToFocus(e.x, e.y)
-                return true
-            }
-            return false
+            // Now, you can use the imageClassifierHelper for GPU-supported operations
+        } else {
+            // GPU is not supported, handle accordingly (show alert dialog, switch fragments, etc.)
+            showAlertDialog("Error", "GPU is not supported on this device")
+            binding.viewPager.currentItem = 0
         }
     }
 
-    private fun handleTapToFocus(x: Float, y: Float) {
-        val meteringPointFactory = binding.preview.meteringPointFactory
-        val autoFocusPoint = meteringPointFactory.createPoint(x, y)
-
-        try {
-            val action = FocusMeteringAction.Builder(autoFocusPoint).build()
-            cameraControl?.startFocusAndMetering(action)
-        } catch (e: CameraInfoUnavailableException) {
-            e.printStackTrace()
-        }
+    private fun showAlertDialog(message: String, error: String) {
+        val builder = AlertDialog.Builder(this@CameraActivity)
+        builder.setTitle(message).setMessage(error)
+            .setPositiveButton("OK") { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+        val alertDialog = builder.create()
+        alertDialog.show()
     }
 
 }
+

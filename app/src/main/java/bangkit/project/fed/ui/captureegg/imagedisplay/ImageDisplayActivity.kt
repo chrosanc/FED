@@ -15,6 +15,7 @@ import bangkit.project.fed.R
 import bangkit.project.fed.data.api.ApiConfig
 import bangkit.project.fed.databinding.ActivityImageDisplayBinding
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -31,11 +32,14 @@ class ImageDisplayActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityImageDisplayBinding
     private lateinit var originalBitmap: Bitmap
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityImageDisplayBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        auth = FirebaseAuth.getInstance()
 
         binding.back.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
@@ -56,23 +60,28 @@ class ImageDisplayActivity : AppCompatActivity() {
             }
             showLoading(true)
             lifecycleScope.launch {
+                val uid = auth.currentUser?.uid.toString()
+
                 val labelRequestBody = imageName.toRequestBody("text/plain".toMediaType())
 
                 val file = convertBitmapToFile(originalBitmap).reduceFileImage()
                 val requestFile = file.asRequestBody("multipart/form-data".toMediaType())
                 val filePart = MultipartBody.Part.createFormData("file", file.name, requestFile)
                 Log.i("infoo", file.length().toString())
+                val detectionTimestamp = System.currentTimeMillis().toString().toRequestBody("text/plain".toMediaType())
 
-                val apiService = ApiConfig.getApiService()
+                val apiService = ApiConfig.getApiService(uid)
 
                 try {
-                    val response = apiService.uploadImage(filePart, labelRequestBody)
+                    val response = apiService.uploadImage(uid, filePart, labelRequestBody, detectionTimestamp)
                     showToast("Image uploaded successfully. Response: ${response.message}")
                 } catch (e: Exception) {
                     showToast("Error uploading image: ${e.message}")
                     Log.e("UploadImage", "Error uploading image", e)
                 } finally {
-                    showLoading(false) // Menyembunyikan ProgressBar setelah upload selesai
+                    showLoading(false)
+                    finish()
+                    // Menyembunyikan ProgressBar setelah upload selesai
                 }
             }
         }

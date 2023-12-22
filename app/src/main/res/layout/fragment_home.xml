@@ -59,6 +59,7 @@
                 android:text="@string/recents"/>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recentRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:orientation="horizontal"
@@ -83,6 +84,7 @@
                 android:text="@string/library"/>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/LibraryRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:listitem="@layout/cardlibrary"/>
